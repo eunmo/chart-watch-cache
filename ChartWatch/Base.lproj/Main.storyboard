@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Songs-->
@@ -21,24 +22,39 @@
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mSd-CM-F0e">
-                                            <rect key="frame" x="8" y="0.0" width="44" height="44"/>
-                                        </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8ms-cq-2LR">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8ms-cq-2LR">
                                             <rect key="frame" x="60" y="2" width="532" height="21"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f5c-4i-0Up">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f5c-4i-0Up">
                                             <rect key="frame" x="60" y="22" width="532" height="21"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="uJ4-HA-CFP">
+                                            <rect key="frame" x="18" y="12" width="20" height="20"/>
+                                        </activityIndicatorView>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mSd-CM-F0e">
+                                            <rect key="frame" x="8" y="2" width="40" height="40"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="40" id="WR7-yz-blS"/>
+                                                <constraint firstAttribute="width" constant="40" id="brj-AV-VrV"/>
+                                            </constraints>
+                                        </imageView>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="f5c-4i-0Up" firstAttribute="leading" secondItem="mSd-CM-F0e" secondAttribute="trailing" constant="12" id="KYM-JM-q04"/>
+                                        <constraint firstItem="8ms-cq-2LR" firstAttribute="trailing" secondItem="II4-1c-a62" secondAttribute="trailingMargin" id="fll-th-ZmD"/>
+                                        <constraint firstItem="f5c-4i-0Up" firstAttribute="trailing" secondItem="II4-1c-a62" secondAttribute="trailingMargin" id="hk8-Rt-gfF"/>
+                                        <constraint firstItem="8ms-cq-2LR" firstAttribute="leading" secondItem="mSd-CM-F0e" secondAttribute="trailing" constant="12" id="l6l-JD-g2n"/>
+                                        <constraint firstItem="mSd-CM-F0e" firstAttribute="leading" secondItem="II4-1c-a62" secondAttribute="leadingMargin" id="leu-Mo-FOG"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <connections>
+                                    <outlet property="activityIndicator" destination="uJ4-HA-CFP" id="0YO-K0-7gf"/>
                                     <outlet property="albumImageView" destination="mSd-CM-F0e" id="gT0-oS-CqM"/>
                                     <outlet property="artistLabel" destination="f5c-4i-0Up" id="uHX-5Y-7j5"/>
                                     <outlet property="nameLabel" destination="8ms-cq-2LR" id="4fq-AV-ck8"/>
@@ -65,11 +81,11 @@
             </objects>
             <point key="canvasLocation" x="1965" y="481"/>
         </scene>
-        <!--Item-->
+        <!--Songs-->
         <scene sceneID="Xma-ms-E5c">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="oE4-va-MVu" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="FZn-JL-zQD"/>
+                    <tabBarItem key="tabBarItem" title="Songs" id="FZn-JL-zQD"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="kmC-by-N2q">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>

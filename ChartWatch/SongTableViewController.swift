@@ -23,10 +23,15 @@ class SongTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
-        loadSongs()
+        if let savedSongs = loadSongs() {
+            songs = savedSongs
+        } else {
+            fetchSongs()
+        }
     }
     
-    func loadSongs() {
+    func fetchSongs() {
+        songs = [Song]()
         
         let urlAsString = "http://39.118.139.72:3000/chart/current"
         let url = NSURL(string: urlAsString)!
@@ -36,7 +41,8 @@ class SongTableViewController: UITableViewController {
             let json = JSON(data: data!)
             
             for (_, songRow) in json {
-                let photo = UIImage(named: "star")!
+                let songId = songRow["song"]["id"].intValue
+                let albumId = songRow["song"]["Albums"][0]["id"].intValue
                 let title = songRow["song"]["title"].stringValue
                 let titleNorm = title.stringByReplacingOccurrencesOfString("`", withString: "'")
                 
@@ -54,10 +60,13 @@ class SongTableViewController: UITableViewController {
                     }
                     artistString += artist
                 }
-                let song = Song(name: titleNorm, artist: artistString, photo: photo)!
+                let song = Song(name: titleNorm, artist: artistString, id: songId, album: albumId)!
+                self.loadImage(song)
                 
                 self.songs += [song]
             }
+            
+            self.saveSongs()
             
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 self.tableView.reloadData()
@@ -65,6 +74,25 @@ class SongTableViewController: UITableViewController {
         })
         
         jsonQuery.resume()
+    }
+    
+    func loadImage(song: Song) {
+        
+        
+        let urlAsString = "http://39.118.139.72:3000/\(song.album).80px.jpg"
+        let url = NSURL(string: urlAsString)!
+        let urlSession = NSURLSession.sharedSession()
+        
+        let query = urlSession.dataTaskWithURL(url, completionHandler: { data, response, error -> Void in
+            song.photo = UIImage(data: data!)
+            song.loaded = true
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.tableView.reloadData()
+            })
+        })
+        
+        query.resume()
     }
 
     override func didReceiveMemoryWarning() {
@@ -93,7 +121,12 @@ class SongTableViewController: UITableViewController {
         // Configure the cell...
         cell.nameLabel.text = song.name
         cell.artistLabel.text = song.artist
-        cell.albumImageView.image = song.photo
+        if song.loaded {
+            cell.albumImageView.image = song.photo
+            cell.activityIndicator.stopAnimating()
+        } else {
+            cell.activityIndicator.startAnimating()
+        }
 
         return cell
     }
@@ -146,8 +179,27 @@ class SongTableViewController: UITableViewController {
     // MARK: Actions
     
     @IBAction func reload(sender: UIBarButtonItem) {
-        songs = [Song]()
-        loadSongs()
+        fetchSongs()
     }
     
+    // MARK: NSCoding
+    
+    func saveSongs() {
+        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(songs, toFile: Song.ArchiveURL.path!)
+        if !isSuccessfulSave {
+            print("Failed to save meals...")
+        }
+    }
+    
+    func loadSongs() -> [Song]? {
+        let savedSongs = NSKeyedUnarchiver.unarchiveObjectWithFile(Song.ArchiveURL.path!) as? [Song]
+        
+        if savedSongs != nil {
+            for song in savedSongs! {
+                loadImage(song)
+            }
+        }
+        
+        return savedSongs
+    }
 }

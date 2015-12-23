@@ -34,6 +34,10 @@ class Song: NSObject, NSCoding {
     static let DocumentsDirectory = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
     static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent("songs")
     
+    // MARK: Notification Key
+    
+    static let notificationKey = "songNotificationKey"
+    
     init?(name: String, artist: String, id: Int, album: Int) {
         // Initialize stored properties.
         self.name = name
@@ -67,5 +71,83 @@ class Song: NSObject, NSCoding {
         let album = aDecoder.decodeIntegerForKey(PropertyKey.albumKey)
         
         self.init(name: name, artist: artist, id: id, album: album)
+    }
+    
+    func getImageUrl() -> NSURL {
+        return Song.DocumentsDirectory.URLByAppendingPathComponent("\(album).jpg")
+    }
+    
+    func saveImage(data: NSData) {
+        photo = UIImage(data: data)
+        
+        let fileUrl = getImageUrl()
+        
+        data.writeToURL(fileUrl, atomically: true)
+        
+        print("Saving image to \(fileUrl)")
+    }
+    
+    func load() {
+        
+        if let filePath = getImageUrl().path where NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+            photo = UIImage(contentsOfFile: filePath)
+            if (photo != nil) {
+                loadMedia()
+                return
+            }
+        }
+        
+        let urlAsString = "http://39.118.139.72:3000/\(album).80px.jpg"
+        let url = NSURL(string: urlAsString)!
+        let urlSession = NSURLSession.sharedSession()
+        
+        let query = urlSession.dataTaskWithURL(url, completionHandler: { data, response, error -> Void in
+            if data != nil {
+                self.saveImage(data!)
+                self.loadMedia()
+            }
+        })
+        
+        query.resume()
+    }
+    
+    func getMediaUrl() -> NSURL {
+        return Song.DocumentsDirectory.URLByAppendingPathComponent("\(id).mp3")
+    }
+    
+    func saveMedia(data: NSData) {
+        
+        let fileUrl = getMediaUrl()
+        
+        data.writeToURL(fileUrl, atomically: true)
+        
+        print("Saving media to \(fileUrl)")
+    }
+    
+    func loadMedia() {
+        
+        if let filePath = getMediaUrl().path where NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+            loaded = true
+            notify()
+            return
+        }
+        
+        let urlAsString = "http://39.118.139.72:3000/music/\(id).mp3"
+        let url = NSURL(string: urlAsString)!
+        let urlSession = NSURLSession.sharedSession()
+        
+        let query = urlSession.dataTaskWithURL(url, completionHandler: { data, response, error -> Void in
+            if data != nil {
+                self.saveMedia(data!)
+                self.loaded = true
+                self.notify()
+            }
+        })
+        
+        query.resume()
+    }
+    
+    @IBAction func notify() {
+        NSNotificationCenter.defaultCenter().postNotificationName(Song.notificationKey, object: self)
     }
 }

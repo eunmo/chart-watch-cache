@@ -23,11 +23,21 @@ class SongTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification", name: Song.notificationKey, object: nil)
+        
         if let savedSongs = loadSongs() {
             songs = savedSongs
         } else {
             fetchSongs()
         }
+    }
+    
+    func receiveNotification() {
+        print("notified!")
+        
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.tableView.reloadData()
+        })
     }
     
     func fetchSongs() {
@@ -61,7 +71,7 @@ class SongTableViewController: UITableViewController {
                     artistString += artist
                 }
                 let song = Song(name: titleNorm, artist: artistString, id: songId, album: albumId)!
-                self.loadImage(song)
+                song.load()
                 
                 self.songs += [song]
             }
@@ -74,25 +84,6 @@ class SongTableViewController: UITableViewController {
         })
         
         jsonQuery.resume()
-    }
-    
-    func loadImage(song: Song) {
-        
-        
-        let urlAsString = "http://39.118.139.72:3000/\(song.album).80px.jpg"
-        let url = NSURL(string: urlAsString)!
-        let urlSession = NSURLSession.sharedSession()
-        
-        let query = urlSession.dataTaskWithURL(url, completionHandler: { data, response, error -> Void in
-            song.photo = UIImage(data: data!)
-            song.loaded = true
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                self.tableView.reloadData()
-            })
-        })
-        
-        query.resume()
     }
 
     override func didReceiveMemoryWarning() {
@@ -125,6 +116,7 @@ class SongTableViewController: UITableViewController {
             cell.albumImageView.image = song.photo
             cell.activityIndicator.stopAnimating()
         } else {
+            cell.albumImageView.image = nil
             cell.activityIndicator.startAnimating()
         }
 
@@ -187,7 +179,7 @@ class SongTableViewController: UITableViewController {
     func saveSongs() {
         let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(songs, toFile: Song.ArchiveURL.path!)
         if !isSuccessfulSave {
-            print("Failed to save meals...")
+            print("Failed to save songs...")
         }
     }
     
@@ -196,7 +188,7 @@ class SongTableViewController: UITableViewController {
         
         if savedSongs != nil {
             for song in savedSongs! {
-                loadImage(song)
+                song.load()
             }
         }
         

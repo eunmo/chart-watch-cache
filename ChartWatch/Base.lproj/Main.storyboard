@@ -14,9 +14,46 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="adz-Id-exQ">
+                            <rect key="frame" x="0.0" y="64" width="600" height="120"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Pzm-Lu-ZSd">
+                                    <rect key="frame" x="8" y="10" width="100" height="100"/>
+                                    <gestureRecognizers/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="100" id="22x-XC-tOE"/>
+                                        <constraint firstAttribute="width" constant="100" id="mTx-jF-MDN"/>
+                                    </constraints>
+                                    <connections>
+                                        <outletCollection property="gestureRecognizers" destination="1oU-9E-kyX" appends="YES" id="gXs-Cg-agV"/>
+                                    </connections>
+                                </imageView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="ChartWatch" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Frl-iN-z56">
+                                    <rect key="frame" x="116" y="10" width="476" height="21"/>
+                                    <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x8N-op-tGi">
+                                    <rect key="frame" x="116" y="49" width="476" height="21"/>
+                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="Frl-iN-z56" firstAttribute="leading" secondItem="Pzm-Lu-ZSd" secondAttribute="trailing" constant="8" id="8Uo-fF-agv"/>
+                                <constraint firstItem="Pzm-Lu-ZSd" firstAttribute="centerY" secondItem="adz-Id-exQ" secondAttribute="centerY" id="FHD-b7-zBn"/>
+                                <constraint firstItem="x8N-op-tGi" firstAttribute="trailing" secondItem="adz-Id-exQ" secondAttribute="trailingMargin" id="KPq-GX-NK8"/>
+                                <constraint firstItem="Pzm-Lu-ZSd" firstAttribute="leading" secondItem="adz-Id-exQ" secondAttribute="leadingMargin" id="L8w-aa-b8V"/>
+                                <constraint firstItem="Frl-iN-z56" firstAttribute="trailing" secondItem="adz-Id-exQ" secondAttribute="trailingMargin" id="MI8-EQ-hEk"/>
+                                <constraint firstItem="x8N-op-tGi" firstAttribute="leading" secondItem="Pzm-Lu-ZSd" secondAttribute="trailing" constant="8" id="ggQ-Vl-iwz"/>
+                            </constraints>
+                        </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="SongTableViewCell" id="WXb-cy-kSG" customClass="SongTableViewCell" customModule="ChartWatch" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                <rect key="frame" x="0.0" y="212" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WXb-cy-kSG" id="II4-1c-a62">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -37,7 +74,7 @@
                                         <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="uJ4-HA-CFP">
                                             <rect key="frame" x="18" y="12" width="20" height="20"/>
                                         </activityIndicatorView>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mSd-CM-F0e">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="mSd-CM-F0e">
                                             <rect key="frame" x="8" y="2" width="40" height="40"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="40" id="WR7-yz-blS"/>
@@ -51,6 +88,7 @@
                                         <constraint firstItem="f5c-4i-0Up" firstAttribute="trailing" secondItem="II4-1c-a62" secondAttribute="trailingMargin" id="hk8-Rt-gfF"/>
                                         <constraint firstItem="8ms-cq-2LR" firstAttribute="leading" secondItem="mSd-CM-F0e" secondAttribute="trailing" constant="12" id="l6l-JD-g2n"/>
                                         <constraint firstItem="mSd-CM-F0e" firstAttribute="leading" secondItem="II4-1c-a62" secondAttribute="leadingMargin" id="leu-Mo-FOG"/>
+                                        <constraint firstItem="mSd-CM-F0e" firstAttribute="centerY" secondItem="II4-1c-a62" secondAttribute="centerY" id="pMc-TI-ee8"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
@@ -74,18 +112,27 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="PlayerView" destination="adz-Id-exQ" id="h3e-Ot-XOh"/>
+                        <outlet property="playerImageView" destination="Pzm-Lu-ZSd" id="27k-L0-pso"/>
+                        <outlet property="playerViewArtistLabel" destination="x8N-op-tGi" id="zeh-hy-sOc"/>
+                        <outlet property="playerViewTitleLabel" destination="Frl-iN-z56" id="pr8-w7-Q9d"/>
                         <outlet property="tableView" destination="1ZW-Yc-rWo" id="qeV-jq-Tj3"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ije-fH-Vel" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="1oU-9E-kyX">
+                    <connections>
+                        <action selector="tapPlayerImage:" destination="Jxw-2H-c5D" id="v23-cA-8rA"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1965" y="481"/>
         </scene>
-        <!--Songs-->
+        <!--Navigation Controller-->
         <scene sceneID="Xma-ms-E5c">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="oE4-va-MVu" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Songs" id="FZn-JL-zQD"/>
+                    <tabBarItem key="tabBarItem" systemItem="downloads" id="FZn-JL-zQD"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="kmC-by-N2q">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -100,7 +147,7 @@
             </objects>
             <point key="canvasLocation" x="1153" y="481"/>
         </scene>
-        <!--Item-->
+        <!--View Controller-->
         <scene sceneID="Jhf-M9-yQQ">
             <objects>
                 <viewController id="Elh-gf-nQm" sceneMemberID="viewController">
@@ -113,7 +160,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="5ow-Xg-d7J"/>
+                    <tabBarItem key="tabBarItem" systemItem="more" id="5ow-Xg-d7J"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NOv-zZ-Nvx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

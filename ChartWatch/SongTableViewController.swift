@@ -7,12 +7,23 @@
 //
 
 import UIKit
+import AVFoundation
+import MediaPlayer
 
-class SongTableViewController: UITableViewController {
+class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     
     // MARK: Properties
     
+    @IBOutlet weak var playerView: UIView!
+    @IBOutlet weak var playerViewTitleLabel: UILabel!
+    @IBOutlet weak var playerViewArtistLabel: UILabel!
+    @IBOutlet weak var playerImageView: UIImageView!
+    
     var songs = [Song]()
+    var player = AVAudioPlayer()
+    var playing = false
+    var loaded = false
+    var selectedSong: Song?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +33,10 @@ class SongTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        _ = try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, withOptions: [])
+        _ = try? AVAudioSession.sharedInstance().setActive(true, withOptions: [])
+        
+        UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification", name: Song.notificationKey, object: nil)
         
@@ -33,8 +48,6 @@ class SongTableViewController: UITableViewController {
     }
     
     func receiveNotification() {
-        print("notified!")
-        
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.tableView.reloadData()
         })
@@ -122,6 +135,55 @@ class SongTableViewController: UITableViewController {
 
         return cell
     }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let song = songs[indexPath.row]
+        playSong(song)
+    }
+    
+    func playSong(song: Song) {
+        let url = song.getMediaUrl()
+        do {
+            if playing {
+                player.stop()
+            }
+            
+            player = try AVAudioPlayer(contentsOfURL: url)
+            player.delegate = self
+            player.prepareToPlay()
+            let playerItem = AVPlayerItem(URL: url)  //this will be your audio source
+            var nowPlayingInfo:[String: AnyObject] = [
+                MPMediaItemPropertyTitle: song.name,
+                MPMediaItemPropertyArtist: song.artist,
+                MPMediaItemPropertyPlaybackDuration: player.duration,
+                MPNowPlayingInfoPropertyElapsedPlaybackTime: player.currentTime,
+            ]
+            
+            let metadataList = playerItem.asset.metadata
+            for item in metadataList {
+                if item.commonKey != nil && item.value != nil {
+                    if item.commonKey  == "artwork" {
+                        if let image = UIImage(data: item.value as! NSData) {
+                            playerImageView.image = image
+                            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: image)
+                        }
+                    }
+                }
+            }
+            
+            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = nowPlayingInfo
+            playerViewTitleLabel.text = song.name
+            playerViewArtistLabel.text = song.artist
+            loaded = true
+            selectedSong = song
+            
+            play()
+        } catch {
+            
+        }
+        
+        print ("\(song.name) selected")
+    }
 
     /*
     // Override to support conditional editing of the table view.
@@ -174,6 +236,46 @@ class SongTableViewController: UITableViewController {
         fetchSongs()
     }
     
+    @IBAction func tapPlayerImage(sender: UITapGestureRecognizer) {
+        toggle()
+    }
+    
+    // MARK: Player
+    func pause() {
+        print ("pause")
+        if playing {
+            player.pause()
+            playing = false
+        }
+    }
+    
+    func play() {
+        print ("play")
+        if loaded {
+            player.play()
+            playing = true
+        }
+    }
+    
+    func toggle() {
+        print ("toggle")
+        if playing {
+            pause()
+        } else {
+            play()
+        }
+    }
+    
+    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
+        if flag, let oldSong = selectedSong {
+            if  let index = songs.indexOf(oldSong) where index + 1 < songs.count {
+                let newSong = songs[index + 1]
+                print ("\(oldSong.name) finished. play \(newSong.name)")
+                playSong(newSong)
+            }
+        }
+    }
+    
     // MARK: NSCoding
     
     func saveSongs() {
@@ -193,5 +295,18 @@ class SongTableViewController: UITableViewController {
         }
         
         return savedSongs
+    }
+    
+    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+        switch event!.subtype {
+        case .RemoteControlTogglePlayPause:
+            toggle()
+        case .RemoteControlPlay:
+            play()
+        case .RemoteControlPause:
+            pause()
+        default:break
+        }
+        
     }
 }

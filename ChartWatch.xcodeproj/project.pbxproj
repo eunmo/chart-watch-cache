@@ -159,6 +159,11 @@
 					54FFAF161C280D2800842F36 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = 6HUL83HTGD;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					54FFAF2A1C280D2800842F36 = {
 						CreatedOnToolsVersion = 7.2;
@@ -406,6 +411,7 @@
 				54FFAF361C280D2800842F36 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		54FFAF371C280D2800842F36 /* Build configuration list for PBXNativeTarget "ChartWatchTests" */ = {
 			isa = XCConfigurationList;
@@ -414,6 +420,7 @@
 				54FFAF391C280D2800842F36 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

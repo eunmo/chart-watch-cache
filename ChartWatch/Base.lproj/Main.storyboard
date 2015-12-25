@@ -147,10 +147,10 @@
             </objects>
             <point key="canvasLocation" x="1153" y="481"/>
         </scene>
-        <!--View Controller-->
+        <!--More View Controller-->
         <scene sceneID="Jhf-M9-yQQ">
             <objects>
-                <viewController id="Elh-gf-nQm" sceneMemberID="viewController">
+                <viewController id="Elh-gf-nQm" customClass="MoreViewController" customModule="ChartWatch" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="w5f-eJ-yPz"/>
                         <viewControllerLayoutGuide type="bottom" id="thf-oA-hHj"/>
@@ -158,9 +158,43 @@
                     <view key="view" contentMode="scaleToFill" id="FLa-eL-LYT">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Chart Watch" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="66o-Q0-ns4">
+                                <rect key="frame" x="20" y="28" width="560" height="21"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pm9-6O-iqn">
+                                <rect key="frame" x="20" y="57" width="560" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FXq-dQ-1Cb">
+                                <rect key="frame" x="272" y="86" width="57" height="30"/>
+                                <state key="normal" title="Cleanup"/>
+                                <connections>
+                                    <action selector="cleanup:" destination="Elh-gf-nQm" eventType="touchUpInside" id="dyz-xe-IlT"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="pm9-6O-iqn" firstAttribute="top" secondItem="66o-Q0-ns4" secondAttribute="bottom" constant="8" id="Yho-bj-bZr"/>
+                            <constraint firstItem="66o-Q0-ns4" firstAttribute="trailing" secondItem="FLa-eL-LYT" secondAttribute="trailingMargin" id="auW-Fk-HnM"/>
+                            <constraint firstItem="FXq-dQ-1Cb" firstAttribute="centerX" secondItem="FLa-eL-LYT" secondAttribute="centerX" id="c6n-eV-M4a"/>
+                            <constraint firstItem="pm9-6O-iqn" firstAttribute="leading" secondItem="FLa-eL-LYT" secondAttribute="leadingMargin" id="dro-zA-fal"/>
+                            <constraint firstItem="pm9-6O-iqn" firstAttribute="trailing" secondItem="FLa-eL-LYT" secondAttribute="trailingMargin" id="e78-7t-H4D"/>
+                            <constraint firstItem="FXq-dQ-1Cb" firstAttribute="top" secondItem="pm9-6O-iqn" secondAttribute="bottom" constant="8" id="evG-xp-3WU"/>
+                            <constraint firstItem="66o-Q0-ns4" firstAttribute="leading" secondItem="FLa-eL-LYT" secondAttribute="leadingMargin" id="inu-CQ-vqy"/>
+                            <constraint firstItem="66o-Q0-ns4" firstAttribute="top" secondItem="w5f-eJ-yPz" secondAttribute="bottom" constant="8" id="vMu-Ux-n2e"/>
+                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" systemItem="more" id="5ow-Xg-d7J"/>
+                    <connections>
+                        <outlet property="subtitleLabel" destination="pm9-6O-iqn" id="ybm-05-tmr"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NOv-zZ-Nvx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

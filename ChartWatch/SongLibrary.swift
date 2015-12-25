@@ -17,11 +17,18 @@ class SongLibrary {
     var curSongIndex = 0
     var selected = false
     
+    var songIds = [Int:Song]()
+    var albumIds = Set<Int>()
+    
     // MARK: Notification Key
     
     static let notificationKey = "songLibraryNotificationKey"
     
     // MARK: Getters
+    
+    func getCount() -> Int {
+        return songs.count
+    }
     
     func getSongAtIndex(index: NSIndexPath) -> Song? {
         let row = index.row
@@ -71,12 +78,20 @@ class SongLibrary {
             songs = savedSongs!
             for song in savedSongs! {
                 song.load()
+                registerSong(song)
             }
         } else {
             fetch()
         }
         
         return savedSongs != nil
+    }
+    
+    // MARK: Manage
+    
+    func registerSong(song: Song) {
+        songIds[song.id] = song
+        albumIds.insert(song.album)
     }
     
     func fetch() {
@@ -111,6 +126,7 @@ class SongLibrary {
                 }
                 let song = Song(name: titleNorm, artist: artistString, id: songId, album: albumId)!
                 song.load()
+                self.registerSong(song)
                 
                 self.songs += [song]
             }
@@ -120,6 +136,45 @@ class SongLibrary {
         })
         
         jsonQuery.resume()
+    }
+    
+    func cleanup() -> String? {
+        var message: String?
+        
+        do {
+            let files = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(Song.DocumentsDirectory, includingPropertiesForKeys: [], options: [])
+            var mediaCount = 0
+            var imageCount = 0
+            var mediaDeleteCount = 0
+            var imageDeleteCount = 0
+            
+            for file in files {
+                switch file.pathExtension! {
+                case "mp3":
+                    if let song = Int((file.URLByDeletingPathExtension?.lastPathComponent)!) where songIds[song] == nil {
+                        try NSFileManager.defaultManager().removeItemAtURL(file)
+                        try NSFileManager.defaultManager().removeItemAtURL(file)
+                        mediaDeleteCount++
+                    }
+                    mediaCount++
+                case "jpg":
+                    if let album = Int((file.URLByDeletingPathExtension?.lastPathComponent)!) where !albumIds.contains(album) {
+                        try NSFileManager.defaultManager().removeItemAtURL(file)
+                        imageDeleteCount++
+                    }
+                    imageCount++
+                default: break
+                }
+            }
+            
+            message = "\(mediaDeleteCount)/\(mediaCount) media files\n\(imageDeleteCount)/\(imageCount) image files"
+            
+            
+        } catch {
+            
+        }
+        
+        return message
     }
     
     @IBAction func notify() {

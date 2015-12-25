@@ -14,10 +14,13 @@ class Song: NSObject, NSCoding {
     // MARK: Properties
     
     var name: String
-    var photo: UIImage?
     var artist: String
     var id: Int
     var album: Int
+    var plays: Int
+    var lastPlayed: NSDate?
+    
+    var photo: UIImage?
     var loaded: Bool
     var extractedImage: UIImage?
     
@@ -28,6 +31,8 @@ class Song: NSObject, NSCoding {
         static let artistKey = "artist"
         static let IdKey = "songId"
         static let albumKey = "album"
+        static let playsKey = "plays"
+        static let lastPlayedKey = "lastPlayed"
     }
     
     // MARK: Archiving Paths
@@ -39,14 +44,17 @@ class Song: NSObject, NSCoding {
     
     static let notificationKey = "songNotificationKey"
     
-    init?(name: String, artist: String, id: Int, album: Int) {
+    init?(name: String, artist: String, id: Int, album: Int, plays: Int, lastPlayed: NSDate?) {
         // Initialize stored properties.
         self.name = name
         self.artist = artist
+        self.id = id
+        self.album = album
+        self.plays = plays
+        self.lastPlayed = lastPlayed
+        
         self.photo = nil
-        self.id = id;
-        self.album = album;
-        self.loaded = false;
+        self.loaded = false
         
         super.init()
         
@@ -54,6 +62,17 @@ class Song: NSObject, NSCoding {
         if name.isEmpty {
             return nil
         }
+        
+        print ("\(name) played \(plays) times (last played \(lastPlayed))")
+    }
+    
+    // MARK: Update
+    
+    func recordPlay() {
+        plays++
+        lastPlayed = NSDate()
+        
+        print ("\(name) played \(plays) times (last played \(lastPlayed))")
     }
     
     // MARK: Information
@@ -88,6 +107,8 @@ class Song: NSObject, NSCoding {
         aCoder.encodeObject(artist, forKey: PropertyKey.artistKey)
         aCoder.encodeInteger(id, forKey: PropertyKey.IdKey)
         aCoder.encodeInteger(album, forKey: PropertyKey.albumKey)
+        aCoder.encodeInteger(plays, forKey: PropertyKey.playsKey)
+        aCoder.encodeObject(lastPlayed, forKey: PropertyKey.lastPlayedKey)
     }
     
     required convenience init?(coder aDecoder: NSCoder) {
@@ -95,8 +116,10 @@ class Song: NSObject, NSCoding {
         let artist = aDecoder.decodeObjectForKey(PropertyKey.artistKey) as! String
         let id = aDecoder.decodeIntegerForKey(PropertyKey.IdKey)
         let album = aDecoder.decodeIntegerForKey(PropertyKey.albumKey)
+        let plays = aDecoder.decodeIntegerForKey(PropertyKey.playsKey)
+        let lastPlayed = aDecoder.decodeObjectForKey(PropertyKey.lastPlayedKey) as? NSDate
         
-        self.init(name: name, artist: artist, id: id, album: album)
+        self.init(name: name, artist: artist, id: id, album: album, plays: plays, lastPlayed: lastPlayed)
     }
     
     // MARK: Image

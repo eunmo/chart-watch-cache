@@ -13,6 +13,8 @@ class MoreViewController: UIViewController {
     // MARK: Properties
     
     @IBOutlet weak var subtitleLabel: UILabel!
+    @IBOutlet weak var pushButton: UIButton!
+    @IBOutlet weak var pullButton: UIButton!
     
     var songLibrary: SongLibrary?
     
@@ -41,6 +43,8 @@ class MoreViewController: UIViewController {
         } else {
             subtitleLabel.text = "No song cached"
         }
+        
+        pushButton.enabled = songLibrary?.canPush() ?? false
     }
     
     func receiveNotification() {
@@ -57,6 +61,8 @@ class MoreViewController: UIViewController {
     }
     */
 
+    // MARK: Action
+    
     @IBAction func cleanup(sender: UIButton) {
         if let message = songLibrary?.cleanup() {
             let alertController = UIAlertController(title: "Cleanup", message: message, preferredStyle: UIAlertControllerStyle.Alert)
@@ -64,5 +70,13 @@ class MoreViewController: UIViewController {
             
             self.presentViewController(alertController, animated: true, completion: nil)
         }
+    }
+    
+    @IBAction func push(sender: UIButton) {
+        songLibrary?.push()
+    }
+    
+    @IBAction func pull(sender: UIButton) {
+        songLibrary?.pull()
     }
 }

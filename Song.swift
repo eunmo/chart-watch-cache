@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import MediaPlayer
 
 class Song: NSObject, NSCoding {
     
@@ -19,6 +19,7 @@ class Song: NSObject, NSCoding {
     var id: Int
     var album: Int
     var loaded: Bool
+    var extractedImage: UIImage?
     
     // MARK: Types
     
@@ -55,6 +56,31 @@ class Song: NSObject, NSCoding {
         }
     }
     
+    // MARK: Information
+    
+    func getNowPlayingInfo() -> [String:AnyObject] {
+        let url = getMediaUrl()
+        let playerItem = AVPlayerItem(URL: url)  //this will be your audio source
+        var nowPlayingInfo:[String: AnyObject] = [
+            MPMediaItemPropertyTitle: name,
+            MPMediaItemPropertyArtist: artist,
+        ]
+        
+        let metadataList = playerItem.asset.metadata
+        for item in metadataList {
+            if item.commonKey != nil && item.value != nil {
+                if item.commonKey  == "artwork" {
+                    if let image = UIImage(data: item.value as! NSData) {
+                        extractedImage = image
+                        nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: image)
+                    }
+                }
+            }
+        }
+        
+        return nowPlayingInfo
+    }
+    
     // MARK: NSCoding
     
     func encodeWithCoder(aCoder: NSCoder) {
@@ -72,6 +98,8 @@ class Song: NSObject, NSCoding {
         
         self.init(name: name, artist: artist, id: id, album: album)
     }
+    
+    // MARK: Image
     
     func getImageUrl() -> NSURL {
         return Song.DocumentsDirectory.URLByAppendingPathComponent("\(album).jpg")
@@ -111,6 +139,8 @@ class Song: NSObject, NSCoding {
         query.resume()
     }
     
+    // MARK: Media
+    
     func getMediaUrl() -> NSURL {
         return Song.DocumentsDirectory.URLByAppendingPathComponent("\(id).mp3")
     }
@@ -146,6 +176,8 @@ class Song: NSObject, NSCoding {
         
         query.resume()
     }
+    
+    // MARK: Notification
     
     @IBAction func notify() {
         NSNotificationCenter.defaultCenter().postNotificationName(Song.notificationKey, object: self)

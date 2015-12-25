@@ -19,11 +19,10 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     @IBOutlet weak var playerViewArtistLabel: UILabel!
     @IBOutlet weak var playerImageView: UIImageView!
     
-    var songs = [Song]()
+    var songLibrary: SongLibrary?
     var player = AVAudioPlayer()
     var playing = false
     var loaded = false
-    var selectedSong: Song?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,11 +38,10 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification", name: Song.notificationKey, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification", name: SongLibrary.notificationKey, object: nil)
         
-        if let savedSongs = loadSongs() {
-            songs = savedSongs
-        } else {
-            fetchSongs()
+        if let tabBarController = self.tabBarController as? CustomTabBarController {
+            songLibrary = tabBarController.songLibrary
         }
     }
     
@@ -51,52 +49,6 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.tableView.reloadData()
         })
-    }
-    
-    func fetchSongs() {
-        songs = [Song]()
-        
-        let urlAsString = "http://39.118.139.72:3000/chart/current"
-        let url = NSURL(string: urlAsString)!
-        let urlSession = NSURLSession.sharedSession()
-        
-        let jsonQuery = urlSession.dataTaskWithURL(url, completionHandler: { data, response, error -> Void in
-            let json = JSON(data: data!)
-            
-            for (_, songRow) in json {
-                let songId = songRow["song"]["id"].intValue
-                let albumId = songRow["song"]["Albums"][0]["id"].intValue
-                let title = songRow["song"]["title"].stringValue
-                let titleNorm = title.stringByReplacingOccurrencesOfString("`", withString: "'")
-                
-                var artists = [String]()
-                for (_, artistRow) in songRow["songArtists"] {
-                    let artist = artistRow["name"].stringValue
-                    let order = artistRow["order"].intValue
-                    artists.insert(artist, atIndex: order)
-                }
-                
-                var artistString = ""
-                for (i, artist) in artists.enumerate() {
-                    if i > 0 {
-                        artistString += ", "
-                    }
-                    artistString += artist
-                }
-                let song = Song(name: titleNorm, artist: artistString, id: songId, album: albumId)!
-                song.load()
-                
-                self.songs += [song]
-            }
-            
-            self.saveSongs()
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                self.tableView.reloadData()
-            })
-        })
-        
-        jsonQuery.resume()
     }
 
     override func didReceiveMemoryWarning() {
@@ -111,16 +63,15 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return songs.count
+        return songLibrary?.songs.count ?? 0
     }
-
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cellIdentifier = "SongTableViewCell"
         let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! SongTableViewCell
 
         // Fetch song
-        let song = songs[indexPath.row]
+        let song = songLibrary!.getSongAtIndex(indexPath)!
         
         // Configure the cell...
         cell.nameLabel.text = song.name
@@ -137,8 +88,9 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let song = songs[indexPath.row]
-        playSong(song)
+        if let song = songLibrary!.selectSongAtIndex(indexPath) {
+            playSong(song)
+        }
     }
     
     func playSong(song: Song) {
@@ -151,31 +103,17 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
             player = try AVAudioPlayer(contentsOfURL: url)
             player.delegate = self
             player.prepareToPlay()
-            let playerItem = AVPlayerItem(URL: url)  //this will be your audio source
-            var nowPlayingInfo:[String: AnyObject] = [
-                MPMediaItemPropertyTitle: song.name,
-                MPMediaItemPropertyArtist: song.artist,
-                MPMediaItemPropertyPlaybackDuration: player.duration,
-                MPNowPlayingInfoPropertyElapsedPlaybackTime: player.currentTime,
-            ]
             
-            let metadataList = playerItem.asset.metadata
-            for item in metadataList {
-                if item.commonKey != nil && item.value != nil {
-                    if item.commonKey  == "artwork" {
-                        if let image = UIImage(data: item.value as! NSData) {
-                            playerImageView.image = image
-                            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: image)
-                        }
-                    }
-                }
-            }
-            
+            var nowPlayingInfo = song.getNowPlayingInfo()
+            nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = player.duration
+            nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime
             MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = nowPlayingInfo
+            
             playerViewTitleLabel.text = song.name
             playerViewArtistLabel.text = song.artist
+            playerImageView.image = song.extractedImage
+            
             loaded = true
-            selectedSong = song
             
             play()
         } catch {
@@ -233,7 +171,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     // MARK: Actions
     
     @IBAction func reload(sender: UIBarButtonItem) {
-        fetchSongs()
+        songLibrary?.fetch()
     }
     
     @IBAction func tapPlayerImage(sender: UITapGestureRecognizer) {
@@ -241,6 +179,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     }
     
     // MARK: Player
+    
     func pause() {
         print ("pause")
         if playing {
@@ -267,34 +206,9 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     }
     
     func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
-        if flag, let oldSong = selectedSong {
-            if  let index = songs.indexOf(oldSong) where index + 1 < songs.count {
-                let newSong = songs[index + 1]
-                print ("\(oldSong.name) finished. play \(newSong.name)")
-                playSong(newSong)
-            }
+        if flag, let song = songLibrary?.selectNextSong() {
+            playSong(song)
         }
-    }
-    
-    // MARK: NSCoding
-    
-    func saveSongs() {
-        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(songs, toFile: Song.ArchiveURL.path!)
-        if !isSuccessfulSave {
-            print("Failed to save songs...")
-        }
-    }
-    
-    func loadSongs() -> [Song]? {
-        let savedSongs = NSKeyedUnarchiver.unarchiveObjectWithFile(Song.ArchiveURL.path!) as? [Song]
-        
-        if savedSongs != nil {
-            for song in savedSongs! {
-                song.load()
-            }
-        }
-        
-        return savedSongs
     }
     
     override func remoteControlReceivedWithEvent(event: UIEvent?) {

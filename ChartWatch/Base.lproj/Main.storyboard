@@ -166,10 +166,10 @@
             </objects>
             <point key="canvasLocation" x="1153" y="1156"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Custom Tab Bar Controller-->
         <scene sceneID="iLK-fq-aRr">
             <objects>
-                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="LGf-pf-gIb" sceneMemberID="viewController">
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="LGf-pf-gIb" customClass="CustomTabBarController" customModule="ChartWatch" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="JNZ-M7-IIk">
                         <autoresizingMask key="autoresizingMask"/>

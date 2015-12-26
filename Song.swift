@@ -194,6 +194,8 @@ class Song: NSObject, NSCoding {
                 self.saveMedia(data!)
                 self.loaded = true
                 self.notify()
+            } else {
+                self.loadMedia()
             }
         })
         
@@ -202,7 +204,7 @@ class Song: NSObject, NSCoding {
     
     // MARK: Notification
     
-    @IBAction func notify() {
+    func notify() {
         NSNotificationCenter.defaultCenter().postNotificationName(Song.notificationKey, object: self)
     }
 }

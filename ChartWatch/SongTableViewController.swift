@@ -93,6 +93,10 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
         }
     }
     
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String {
+        return songLibrary?.getSectionHeaderString(section) ?? ""
+    }
+    
     func playSong(song: Song) {
         let url = song.getMediaUrl()
         do {

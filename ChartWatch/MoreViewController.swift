@@ -24,6 +24,7 @@ class MoreViewController: UIViewController {
         // Do any additional setup after loading the view.
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification", name: Song.notificationKey, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification", name: SongLibrary.notificationKey, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNetworkNotification", name: SongLibrary.networkNotificationKey, object: nil)
         
         if let tabBarController = self.tabBarController as? CustomTabBarController {
             songLibrary = tabBarController.songLibrary
@@ -58,6 +59,16 @@ class MoreViewController: UIViewController {
     func receiveNotification() {
         print("receive notification")
         updateUI()
+    }
+    
+    func receiveNetworkNotification() {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            let alertController = UIAlertController(title: "Network", message: "Request Done", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default,handler: nil))
+            
+            self.presentViewController(alertController, animated: true, completion: nil)
+            
+        })
     }
 
     /*

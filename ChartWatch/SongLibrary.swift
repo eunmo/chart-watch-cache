@@ -20,18 +20,19 @@ class SongLibrary {
     var songIds = [Int:Song]()
     var albumIds = Set<Int>()
     let dateFormatter: NSDateFormatter = NSDateFormatter()
-    var songSections = ["current":0, "charted":1]
+    let songSections = ["current", "charted"]
     
     // MARK: Notification Key
     
     static let notificationKey = "songLibraryNotificationKey"
+    static let networkNotificationKey = "songLibraryNetworkNotificationKey"
     static let serverAddress = "http://39.118.139.72:3000"
     
     // MARK: Constructor
     
     init() {
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        
+
         initSections()
         
         load()
@@ -39,9 +40,14 @@ class SongLibrary {
     
     func initSections() {
         sections = [[Song]]()
-        for (_, _) in songSections {
+        for _ in songSections {
             sections.append([Song]())
         }
+    }
+    
+    func initMaps() {
+        songIds = [Int:Song]()
+        albumIds = Set<Int>()
     }
     
     // MARK: Getters
@@ -101,6 +107,10 @@ class SongLibrary {
         
         selected = false
         return nil
+    }
+    
+    func getSectionHeaderString(section: Int) -> String {
+        return "\(sections[section].count) \(songSections[section]) songs"
     }
     
     // MARK: NSCoding
@@ -163,7 +173,7 @@ class SongLibrary {
     
     func sectionFromJSON(section: String, json: JSON) {
         let jsonSection = json[section]
-        let sectionIndex = songSections[section]!
+        let sectionIndex = songSections.indexOf(section)!
         
         for (_, songRow) in jsonSection {
             let song = songFromJSON(songRow)
@@ -186,13 +196,13 @@ class SongLibrary {
             } else {
                 let json = JSON(data: data!)
                 
-                for (section, _) in self.songSections {
+                for section in self.songSections {
                     print(section)
                     self.sectionFromJSON(section, json: json)
                 }
                 
                 self.save()
-                self.notify()
+                self.notifyNetworkDone()
                 print (self.getCount())
             }
         })
@@ -200,8 +210,20 @@ class SongLibrary {
         jsonQuery.resume()
     }
     
+    func rebuildMaps() {
+        songIds = [Int:Song]()
+        albumIds = Set<Int>()
+        
+        for section in sections {
+            for song in section {
+                registerSong(song)
+            }
+        }
+    }
+    
     func cleanup() -> String? {
         var message: String?
+        rebuildMaps()
         
         do {
             let files = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(Song.DocumentsDirectory, includingPropertiesForKeys: [], options: [])
@@ -252,6 +274,7 @@ class SongLibrary {
             if error != nil {
                 print ("\(error)")
             } else {
+                self.notifyNetworkDone()
                 print ("put successful")
             }
         })
@@ -317,6 +340,7 @@ class SongLibrary {
                     print ("\(song.name) plays \(song.plays) -> \(plays)")
                 }
                 self.save()
+                self.notifyNetworkDone()
                 
                 print ("put successful")
             }
@@ -342,8 +366,13 @@ class SongLibrary {
         return json
     }
     
-    @IBAction func notify() {
+    func notify() {
         print("notify")
         NSNotificationCenter.defaultCenter().postNotificationName(SongLibrary.notificationKey, object: self)
+    }
+    
+    func notifyNetworkDone() {
+        print("notify network job done")
+        NSNotificationCenter.defaultCenter().postNotificationName(SongLibrary.networkNotificationKey, object: self)
     }
 }

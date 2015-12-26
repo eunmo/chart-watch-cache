@@ -22,8 +22,8 @@ class SongLibrary {
     var songIds = [Int:Song]()
     var albumIds = Set<Int>()
     let dateFormatter: NSDateFormatter = NSDateFormatter()
-    let songSections = ["current", "charted"]
-    var sectionLimits = [100, 100]
+    let songSections = ["current", "charted", "uncharted"]
+    var sectionLimits = [100, 100, 100]
     
     // MARK: Archiving Paths
     
@@ -248,6 +248,7 @@ class SongLibrary {
         
         for (_, songRow) in jsonSection {
             let song = songFromJSON(songRow)
+            print("\(section) \(sectionIndex) \(song.name)")
             sections[sectionIndex] += [song]
             registerSong(song)
             song.load()

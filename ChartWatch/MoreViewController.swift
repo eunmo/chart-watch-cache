@@ -15,6 +15,8 @@ class MoreViewController: UIViewController {
     @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var pushButton: UIButton!
     @IBOutlet weak var updateButton: UIButton!
+    @IBOutlet weak var chartedLimitLabel: UILabel!
+    @IBOutlet weak var chartedLimitStepper: UIStepper!
     
     var songLibrary: SongLibrary?
     
@@ -22,7 +24,6 @@ class MoreViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification", name: Song.notificationKey, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification", name: SongLibrary.notificationKey, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNetworkNotification", name: SongLibrary.networkNotificationKey, object: nil)
         
@@ -39,7 +40,6 @@ class MoreViewController: UIViewController {
     }
     
     func updateUI() {
-        print ("Update UI")
         if let count = songLibrary?.getCount() {
             subtitleLabel.text = "\(count) songs cached"
         } else {
@@ -54,10 +54,13 @@ class MoreViewController: UIViewController {
         subtitleLabel.setNeedsDisplay()
         pushButton.setNeedsDisplay()
         updateButton.setNeedsDisplay()
+        
+        let chartedLimit = songLibrary?.getLimit("charted") ?? 0
+        chartedLimitStepper.value = Double(chartedLimit)
+        chartedLimitLabel.text = "\(Int(chartedLimitStepper.value)) Charted Songs"
     }
     
     func receiveNotification() {
-        print("receive notification")
         updateUI()
     }
     
@@ -102,5 +105,11 @@ class MoreViewController: UIViewController {
     
     @IBAction func update(sender: UIButton) {
         songLibrary?.fetch()
+    }
+    
+    @IBAction func chartedLimitChanged(sender: UIStepper) {
+        let limit = Int(sender.value)
+        chartedLimitLabel.text = "\(limit) Charted Songs"
+        songLibrary?.setLimit("charted", limit: limit)
     }
 }

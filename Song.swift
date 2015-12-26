@@ -35,11 +35,6 @@ class Song: NSObject, NSCoding {
         static let lastPlayedKey = "lastPlayed"
     }
     
-    // MARK: Archiving Paths
-    
-    static let DocumentsDirectory = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-    static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent("songs")
-    
     // MARK: Notification Key
     
     static let notificationKey = "songNotificationKey"
@@ -63,7 +58,7 @@ class Song: NSObject, NSCoding {
             return nil
         }
         
-        print ("\(name) played \(plays) times (last played \(lastPlayed))")
+        //print ("\(name) played \(plays) times (last played \(lastPlayed))")
     }
     
     // MARK: Update
@@ -125,7 +120,7 @@ class Song: NSObject, NSCoding {
     // MARK: Image
     
     func getImageUrl() -> NSURL {
-        return Song.DocumentsDirectory.URLByAppendingPathComponent("\(album).jpg")
+        return SongLibrary.DocumentsDirectory.URLByAppendingPathComponent("\(album).jpg")
     }
     
     func saveImage(data: NSData) {
@@ -156,6 +151,8 @@ class Song: NSObject, NSCoding {
             if data != nil {
                 self.saveImage(data!)
                 self.loadMedia()
+            } else {
+                self.load()
             }
         })
         
@@ -165,7 +162,7 @@ class Song: NSObject, NSCoding {
     // MARK: Media
     
     func getMediaUrl() -> NSURL {
-        return Song.DocumentsDirectory.URLByAppendingPathComponent("\(id).mp3")
+        return SongLibrary.DocumentsDirectory.URLByAppendingPathComponent("\(id).mp3")
     }
     
     func saveMedia(data: NSData) {

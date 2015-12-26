@@ -16,11 +16,20 @@ class SongLibrary {
     var curSection = 0
     var curSongIndex = 0
     var selected = false
+    var shuffle = false
+    var shuffleId = 0
     
     var songIds = [Int:Song]()
     var albumIds = Set<Int>()
     let dateFormatter: NSDateFormatter = NSDateFormatter()
     let songSections = ["current", "charted"]
+    var sectionLimits = [100, 100]
+    
+    // MARK: Archiving Paths
+    
+    static let DocumentsDirectory = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
+    static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent("songs")
+    static let LimitsURL = DocumentsDirectory.URLByAppendingPathComponent("limits")
     
     // MARK: Notification Key
     
@@ -35,6 +44,7 @@ class SongLibrary {
 
         initSections()
         
+        loadLimits()
         load()
     }
     
@@ -79,9 +89,27 @@ class SongLibrary {
         }
     }
     
+    func getRandomSong() -> Song? {
+        selected = false
+        
+        if songIds.count > 0 {
+            shuffle = true
+            let randomIndex = Int(arc4random_uniform(UInt32(songIds.count)))
+            let song = Array(songIds.values)[randomIndex]
+            print("random \(randomIndex) \(song.name)")
+            shuffleId = song.id
+            
+            return song
+        }
+        
+        return nil
+    }
+    
     func selectSongAtIndex(index: NSIndexPath) -> Song? {
         let section = index.section
         let row = index.row
+        
+        shuffle = false
         
         if row < sections[section].count {
             curSection = section
@@ -103,9 +131,14 @@ class SongLibrary {
                 curSongIndex++
                 return sections[curSection][curSongIndex]
             }
+        } else if shuffle && songIds.count > 0 {
+            songIds[shuffleId]?.recordPlay()
+            save()
+            return getRandomSong()
         }
         
         selected = false
+        shuffle = false
         return nil
     }
     
@@ -113,10 +146,38 @@ class SongLibrary {
         return "\(sections[section].count) \(songSections[section]) songs"
     }
     
+    // MARK: Limits
+    
+    func getLimit(sectionName: String) -> Int {
+        if let section = songSections.indexOf(sectionName) {
+            return sectionLimits[section]
+        }
+        
+        return 0
+    }
+    
+    func setLimit(sectionName: String, limit: Int) {
+        if let section = songSections.indexOf(sectionName) where limit >= 0 {
+            sectionLimits[section] = limit
+            saveLimits()
+        }
+    }
+    
+    func getLimitParameterString() -> String {
+        var params = "?"
+        
+        for section in songSections {
+            let limit = getLimit(section)
+            params += "\(section)=\(limit)&"
+        }
+        
+        return params
+    }
+    
     // MARK: NSCoding
     
     func save() {
-        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(sections, toFile: Song.ArchiveURL.path!)
+        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(sections, toFile: SongLibrary.ArchiveURL.path!)
         notify()
         print ("save")
         if !isSuccessfulSave {
@@ -124,8 +185,12 @@ class SongLibrary {
         }
     }
     
+    func saveLimits() {
+        NSKeyedArchiver.archiveRootObject(sectionLimits, toFile: SongLibrary.LimitsURL.path!)
+    }
+    
     func load() -> Bool {
-        let savedSongs = NSKeyedUnarchiver.unarchiveObjectWithFile(Song.ArchiveURL.path!) as? [[Song]]
+        let savedSongs = NSKeyedUnarchiver.unarchiveObjectWithFile(SongLibrary.ArchiveURL.path!) as? [[Song]]
         
         if savedSongs != nil {
             sections = savedSongs!
@@ -140,6 +205,13 @@ class SongLibrary {
         return savedSongs != nil
     }
     
+    func loadLimits() {
+        if let savedLimits = NSKeyedUnarchiver.unarchiveObjectWithFile(SongLibrary.LimitsURL.path!) as? [Int]
+        where savedLimits.count == sections.count {
+            sectionLimits = savedLimits
+        }
+    }
+    
     // MARK: Manage
     
     func registerSong(song: Song) {
@@ -150,13 +222,12 @@ class SongLibrary {
     func songFromJSON(songRow: JSON) -> Song {
         let songId = songRow["id"].intValue
         let albumId = songRow["albumId"].intValue
-        let title = songRow["title"].stringValue
-        let titleNorm = title.stringByReplacingOccurrencesOfString("`", withString: "'")
+        let title = songRow["title"].stringValue.stringByReplacingOccurrencesOfString("`", withString: "'")
         let plays = songRow["plays"].intValue
         
         var artists = [String]()
         for (_, artistRow) in songRow["songArtists"] {
-            let artist = artistRow["name"].stringValue
+            let artist = artistRow["name"].stringValue.stringByReplacingOccurrencesOfString("`", withString: "'")
             let order = artistRow["order"].intValue
             artists.insert(artist, atIndex: order)
         }
@@ -168,7 +239,7 @@ class SongLibrary {
             }
             artistString += artist
         }
-        return Song(name: titleNorm, artist: artistString, id: songId, album: albumId, plays: plays, lastPlayed: nil)!
+        return Song(name: title, artist: artistString, id: songId, album: albumId, plays: plays, lastPlayed: nil)!
     }
     
     func sectionFromJSON(section: String, json: JSON) {
@@ -186,7 +257,7 @@ class SongLibrary {
     func fetch() {
         initSections()
         
-        let urlAsString = SongLibrary.serverAddress + "/api/ios/fetch"
+        let urlAsString = SongLibrary.serverAddress + "/api/ios/fetch" + getLimitParameterString()
         let url = NSURL(string: urlAsString)!
         let urlSession = NSURLSession.sharedSession()
         
@@ -226,7 +297,7 @@ class SongLibrary {
         rebuildMaps()
         
         do {
-            let files = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(Song.DocumentsDirectory, includingPropertiesForKeys: [], options: [])
+            let files = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(SongLibrary.DocumentsDirectory, includingPropertiesForKeys: [], options: [])
             var mediaCount = 0
             var imageCount = 0
             var mediaDeleteCount = 0
@@ -367,12 +438,10 @@ class SongLibrary {
     }
     
     func notify() {
-        print("notify")
         NSNotificationCenter.defaultCenter().postNotificationName(SongLibrary.notificationKey, object: self)
     }
     
     func notifyNetworkDone() {
-        print("notify network job done")
         NSNotificationCenter.defaultCenter().postNotificationName(SongLibrary.networkNotificationKey, object: self)
     }
 }

@@ -19,7 +19,6 @@ class CustomTabBarController: UITabBarController {
 
         // Do any additional setup after loading the view.
         songLibrary = SongLibrary()
-        songLibrary!.load()
     }
 
     override func didReceiveMemoryWarning() {

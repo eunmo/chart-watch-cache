@@ -59,11 +59,11 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return songLibrary?.getSectionCount() ?? 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return songLibrary?.songs.count ?? 0
+        return songLibrary?.getSectionSongCount(section) ?? 0
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -171,7 +171,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     // MARK: Actions
     
     @IBAction func reload(sender: UIBarButtonItem) {
-        songLibrary?.fetch()
+        
     }
     
     @IBAction func tapPlayerImage(sender: UITapGestureRecognizer) {

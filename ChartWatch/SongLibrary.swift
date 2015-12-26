@@ -12,7 +12,7 @@ class SongLibrary {
     
     // MARK: Properties
     
-    var songs = [Song]()
+    var sections = [[Song]]()
     var curSection = 0
     var curSongIndex = 0
     var selected = false
@@ -20,6 +20,7 @@ class SongLibrary {
     var songIds = [Int:Song]()
     var albumIds = Set<Int>()
     let dateFormatter: NSDateFormatter = NSDateFormatter()
+    var songSections = ["current":0, "charted":1]
     
     // MARK: Notification Key
     
@@ -30,31 +31,57 @@ class SongLibrary {
     
     init() {
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        
+        initSections()
+        
+        load()
+    }
+    
+    func initSections() {
+        sections = [[Song]]()
+        for (_, _) in songSections {
+            sections.append([Song]())
+        }
     }
     
     // MARK: Getters
     
+    func getSectionCount() -> Int {
+        return sections.count
+    }
+    
+    func getSectionSongCount(section: Int) -> Int {
+        if section < 0 || section >= getSectionCount() {
+            return 0
+        } else {
+            return sections[section].count
+        }
+    }
+    
     func getCount() -> Int {
-        return songs.count
+        return songIds.count
     }
     
     func getSongAtIndex(index: NSIndexPath) -> Song? {
+        let section = index.section
         let row = index.row
         
-        if row < songs.count {
-            return songs[row]
+        if row < sections[section].count {
+            return sections[section][row]
         } else {
             return nil
         }
     }
     
     func selectSongAtIndex(index: NSIndexPath) -> Song? {
+        let section = index.section
         let row = index.row
         
-        if row < songs.count {
+        if row < sections[section].count {
+            curSection = section
             curSongIndex = row
             selected = true
-            return songs[row]
+            return sections[section][row]
         } else {
             return nil
         }
@@ -62,13 +89,13 @@ class SongLibrary {
     
     func selectNextSong() -> Song? {
         if selected {
-            let selectedSong = songs[curSongIndex]
+            let selectedSong = sections[curSection][curSongIndex]
             selectedSong.recordPlay()
             save()
             
-            if curSongIndex + 1 < songs.count {
+            if curSongIndex + 1 < sections[curSection].count {
                 curSongIndex++
-                return songs[curSongIndex]
+                return sections[curSection][curSongIndex]
             }
         }
         
@@ -79,7 +106,8 @@ class SongLibrary {
     // MARK: NSCoding
     
     func save() {
-        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(songs, toFile: Song.ArchiveURL.path!)
+        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(sections, toFile: Song.ArchiveURL.path!)
+        notify()
         print ("save")
         if !isSuccessfulSave {
             print("Failed to save songs...")
@@ -87,16 +115,16 @@ class SongLibrary {
     }
     
     func load() -> Bool {
-        let savedSongs = NSKeyedUnarchiver.unarchiveObjectWithFile(Song.ArchiveURL.path!) as? [Song]
+        let savedSongs = NSKeyedUnarchiver.unarchiveObjectWithFile(Song.ArchiveURL.path!) as? [[Song]]
         
         if savedSongs != nil {
-            songs = savedSongs!
-            for song in savedSongs! {
-                song.load()
-                registerSong(song)
+            sections = savedSongs!
+            for section in sections {
+                for song in section {
+                    registerSong(song)
+                    song.load()
+                }
             }
-        } else {
-            fetch()
         }
         
         return savedSongs != nil
@@ -109,10 +137,46 @@ class SongLibrary {
         albumIds.insert(song.album)
     }
     
-    func fetch() {
-        songs = [Song]()
+    func songFromJSON(songRow: JSON) -> Song {
+        let songId = songRow["id"].intValue
+        let albumId = songRow["albumId"].intValue
+        let title = songRow["title"].stringValue
+        let titleNorm = title.stringByReplacingOccurrencesOfString("`", withString: "'")
+        let plays = songRow["plays"].intValue
         
-        let urlAsString = SongLibrary.serverAddress + "/chart/current"
+        var artists = [String]()
+        for (_, artistRow) in songRow["songArtists"] {
+            let artist = artistRow["name"].stringValue
+            let order = artistRow["order"].intValue
+            artists.insert(artist, atIndex: order)
+        }
+        
+        var artistString = ""
+        for (i, artist) in artists.enumerate() {
+            if i > 0 {
+                artistString += ", "
+            }
+            artistString += artist
+        }
+        return Song(name: titleNorm, artist: artistString, id: songId, album: albumId, plays: plays, lastPlayed: nil)!
+    }
+    
+    func sectionFromJSON(section: String, json: JSON) {
+        let jsonSection = json[section]
+        let sectionIndex = songSections[section]!
+        
+        for (_, songRow) in jsonSection {
+            let song = songFromJSON(songRow)
+            sections[sectionIndex] += [song]
+            registerSong(song)
+            song.load()
+        }
+    }
+    
+    func fetch() {
+        initSections()
+        
+        let urlAsString = SongLibrary.serverAddress + "/api/ios/fetch"
         let url = NSURL(string: urlAsString)!
         let urlSession = NSURLSession.sharedSession()
         
@@ -121,43 +185,15 @@ class SongLibrary {
                 // should do something
             } else {
                 let json = JSON(data: data!)
-                //let dateFor: NSDateFormatter = NSDateFormatter()
-                //dateFor.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
                 
-                for (_, songRow) in json {
-                    let songId = songRow["song"]["id"].intValue
-                    let albumId = songRow["song"]["Albums"][0]["id"].intValue
-                    let title = songRow["song"]["title"].stringValue
-                    let titleNorm = title.stringByReplacingOccurrencesOfString("`", withString: "'")
-                    let plays = songRow["song"]["plays"].intValue
-                    
-                    //let lastPlayedString = songRow["song"]["lastPlayed"].stringValue
-                    //let lastPlayed = dateFor.dateFromString(lastPlayedString)
-                    //print ("\(songId):\(titleNorm) last played \(lastPlayed) (\(lastPlayedString)) \(NSDate())")
-                    
-                    var artists = [String]()
-                    for (_, artistRow) in songRow["songArtists"] {
-                        let artist = artistRow["name"].stringValue
-                        let order = artistRow["order"].intValue
-                        artists.insert(artist, atIndex: order)
-                    }
-                    
-                    var artistString = ""
-                    for (i, artist) in artists.enumerate() {
-                        if i > 0 {
-                            artistString += ", "
-                        }
-                        artistString += artist
-                    }
-                    let song = Song(name: titleNorm, artist: artistString, id: songId, album: albumId, plays: plays, lastPlayed: nil)!
-                    song.load()
-                    self.registerSong(song)
-                    
-                    self.songs += [song]
+                for (section, _) in self.songSections {
+                    print(section)
+                    self.sectionFromJSON(section, json: json)
                 }
                 
                 self.save()
                 self.notify()
+                print (self.getCount())
             }
         })
         
@@ -226,7 +262,7 @@ class SongLibrary {
         var json = "["
         var added = false
         
-        for song in songs {
+        for (_, song) in songIds {
             if (song.lastPlayed != nil) {
                 if added {
                     json += ","
@@ -267,8 +303,6 @@ class SongLibrary {
                 print ("\(error)")
             } else {
                 let json = JSON(data: data!)
-                //let dateFor: NSDateFormatter = NSDateFormatter()
-                //dateFor.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
                 
                 for (_, songRow) in json {
                     let id = songRow["id"].intValue
@@ -309,6 +343,7 @@ class SongLibrary {
     }
     
     @IBAction func notify() {
+        print("notify")
         NSNotificationCenter.defaultCenter().postNotificationName(SongLibrary.notificationKey, object: self)
     }
 }

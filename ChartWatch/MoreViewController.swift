@@ -14,7 +14,7 @@ class MoreViewController: UIViewController {
     
     @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var pushButton: UIButton!
-    @IBOutlet weak var pullButton: UIButton!
+    @IBOutlet weak var updateButton: UIButton!
     
     var songLibrary: SongLibrary?
     
@@ -38,16 +38,25 @@ class MoreViewController: UIViewController {
     }
     
     func updateUI() {
+        print ("Update UI")
         if let count = songLibrary?.getCount() {
             subtitleLabel.text = "\(count) songs cached"
         } else {
             subtitleLabel.text = "No song cached"
         }
         
-        pushButton.enabled = songLibrary?.canPush() ?? false
+        let canPush = songLibrary?.canPush()
+        
+        pushButton.enabled = canPush ?? false
+        updateButton.enabled = !(canPush ?? true)
+        
+        subtitleLabel.setNeedsDisplay()
+        pushButton.setNeedsDisplay()
+        updateButton.setNeedsDisplay()
     }
     
     func receiveNotification() {
+        print("receive notification")
         updateUI()
     }
 
@@ -78,5 +87,9 @@ class MoreViewController: UIViewController {
     
     @IBAction func pull(sender: UIButton) {
         songLibrary?.pull()
+    }
+    
+    @IBAction func update(sender: UIButton) {
+        songLibrary?.fetch()
     }
 }

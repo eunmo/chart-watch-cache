@@ -57,7 +57,7 @@ class MoreViewController: UIViewController {
         
         let chartedLimit = songLibrary?.getLimit("charted") ?? 0
         chartedLimitStepper.value = Double(chartedLimit)
-        chartedLimitLabel.text = "\(Int(chartedLimitStepper.value)) Charted Songs"
+        chartedLimitLabel.text = "\(Int(chartedLimitStepper.value)) charted songs"
     }
     
     func receiveNotification() {
@@ -109,7 +109,7 @@ class MoreViewController: UIViewController {
     
     @IBAction func chartedLimitChanged(sender: UIStepper) {
         let limit = Int(sender.value)
-        chartedLimitLabel.text = "\(limit) Charted Songs"
+        chartedLimitLabel.text = "\(limit) charted songs"
         songLibrary?.setLimit("charted", limit: limit)
     }
 }

@@ -22,8 +22,8 @@ class SongLibrary {
     var songIds = [Int:Song]()
     var albumIds = Set<Int>()
     let dateFormatter: NSDateFormatter = NSDateFormatter()
-    let songSections = ["current", "charted", "uncharted"]
-    var sectionLimits = [100, 100, 100]
+    let songSections = ["current", "seasonal", "charted", "uncharted"]
+    var sectionLimits = [100, 3, 300, 100]
     
     // MARK: Archiving Paths
     

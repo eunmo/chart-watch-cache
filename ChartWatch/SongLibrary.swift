@@ -248,7 +248,6 @@ class SongLibrary {
         
         for (_, songRow) in jsonSection {
             let song = songFromJSON(songRow)
-            print("\(section) \(sectionIndex) \(song.name)")
             sections[sectionIndex] += [song]
             registerSong(song)
             song.load()
@@ -256,6 +255,8 @@ class SongLibrary {
     }
     
     func fetch() {
+        songIds = [Int:Song]()
+        albumIds = Set<Int>()
         initSections()
         
         let urlAsString = SongLibrary.serverAddress + "/api/ios/fetch" + getLimitParameterString()

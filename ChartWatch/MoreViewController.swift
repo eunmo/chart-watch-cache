@@ -51,20 +51,27 @@ class MoreViewController: UIViewController {
         pushButton.enabled = canPush ?? false
         updateButton.enabled = !(canPush ?? true)
         
+        /*
         subtitleLabel.setNeedsDisplay()
         pushButton.setNeedsDisplay()
         updateButton.setNeedsDisplay()
+*/
         
         let chartedLimit = songLibrary?.getLimit("charted") ?? 0
         chartedLimitStepper.value = Double(chartedLimit)
         chartedLimitLabel.text = "\(Int(chartedLimitStepper.value)) charted songs"
+        
+        print ("Update UI")
     }
     
     func receiveNotification() {
-        updateUI()
+        dispatch_async(dispatch_get_main_queue(), {
+            self.updateUI()
+        })
     }
     
     func receiveNetworkNotification() {
+        /*
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             let alertController = UIAlertController(title: "Network", message: "Request Done", preferredStyle: UIAlertControllerStyle.Alert)
             alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default,handler: nil))
@@ -72,6 +79,7 @@ class MoreViewController: UIViewController {
             self.presentViewController(alertController, animated: true, completion: nil)
             
         })
+*/
     }
 
     /*

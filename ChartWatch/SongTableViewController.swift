@@ -18,6 +18,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     @IBOutlet weak var playerViewTitleLabel: UILabel!
     @IBOutlet weak var playerViewArtistLabel: UILabel!
     @IBOutlet weak var playerImageView: UIImageView!
+    @IBOutlet weak var playModeLabel: UILabel!
     
     var songLibrary: SongLibrary?
     var player = AVAudioPlayer()
@@ -43,6 +44,15 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
         if let tabBarController = self.tabBarController as? CustomTabBarController {
             songLibrary = tabBarController.songLibrary
         }
+        
+        initUI()
+    }
+    
+    func initUI() {
+        playerViewTitleLabel.text = "ChartWatch"
+        playerViewArtistLabel.text = ""
+        playerImageView.image = nil
+        playModeLabel.text = ""
     }
     
     func receiveNotification() {
@@ -186,6 +196,14 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
         toggle()
     }
     
+    @IBAction func tapPlayModeLabel(sender: UITapGestureRecognizer) {
+        if playModeLabel.text != "+++" {
+            songLibrary?.changePlayMode()
+        }
+        print("play mode selected")
+        playModeLabel.text = songLibrary?.getPlayModeString()
+    }
+    
     // MARK: Player
     
     func pause() {
@@ -201,6 +219,11 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
         if loaded {
             player.play()
             playing = true
+            
+            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration] = player.duration
+            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime
+            
+            playModeLabel.text = "+++"
         }
     }
     
@@ -214,8 +237,13 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     }
     
     func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
-        if flag, let song = songLibrary?.selectNextSong() {
-            playSong(song)
+        if flag {
+            songLibrary?.recordPlay()
+            if let song = songLibrary?.selectNextSong() {
+                playSong(song)
+            } else {
+                initUI()
+            }
         }
     }
     

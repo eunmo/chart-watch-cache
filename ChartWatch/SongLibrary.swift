@@ -16,8 +16,9 @@ class SongLibrary {
     var curSection = 0
     var curSongIndex = 0
     var selected = false
-    var shuffle = false
     var shuffleId = 0
+    var shuffle = false
+    var stop = false
     
     var songIds = [Int:Song]()
     var albumIds = Set<Int>()
@@ -90,6 +91,7 @@ class SongLibrary {
     }
     
     func getRandomSong() -> Song? {
+        stop = false
         selected = false
         
         if songIds.count > 0 {
@@ -109,6 +111,7 @@ class SongLibrary {
         let section = index.section
         let row = index.row
         
+        stop = false
         shuffle = false
         
         if row < sections[section].count {
@@ -121,25 +124,58 @@ class SongLibrary {
         }
     }
     
-    func selectNextSong() -> Song? {
+    func recordPlay() {
         if selected {
             let selectedSong = sections[curSection][curSongIndex]
             selectedSong.recordPlay()
             save()
-            
+        } else if shuffle {
+            songIds[shuffleId]?.recordPlay()
+            save()
+        }
+    }
+    
+    func selectNextSong() -> Song? {
+        if stop {
+            return nil
+        } else if shuffle {
+            return getRandomSong()
+        } else if selected {
             if curSongIndex + 1 < sections[curSection].count {
                 curSongIndex++
                 return sections[curSection][curSongIndex]
             }
-        } else if shuffle && songIds.count > 0 {
-            songIds[shuffleId]?.recordPlay()
-            save()
-            return getRandomSong()
         }
         
         selected = false
         shuffle = false
         return nil
+    }
+    
+    func changePlayMode() {
+        if selected {
+            if stop {
+                stop = false
+            } else if shuffle {
+                shuffle = false
+                stop = true
+            } else {
+                shuffle = true
+            }
+            
+        } else {
+            stop = !stop
+        }
+    }
+    
+    func getPlayModeString() -> String {
+        if stop {
+            return "last song"
+        } else if shuffle {
+            return "shuffle"
+        } else {
+            return "sequential"
+        }
     }
     
     func getSectionHeaderString(section: Int) -> String {

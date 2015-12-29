@@ -29,25 +29,39 @@
                                         <outletCollection property="gestureRecognizers" destination="1oU-9E-kyX" appends="YES" id="gXs-Cg-agV"/>
                                     </connections>
                                 </imageView>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="ChartWatch" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Frl-iN-z56">
-                                    <rect key="frame" x="116" y="10" width="476" height="21"/>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ChartWatch" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Frl-iN-z56">
+                                    <rect key="frame" x="116" y="10" width="476" height="33"/>
                                     <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x8N-op-tGi">
-                                    <rect key="frame" x="116" y="49" width="476" height="21"/>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x8N-op-tGi">
+                                    <rect key="frame" x="116" y="60" width="476" height="0.0"/>
                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
+                                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Play mode: sequential" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cuY-9E-by7">
+                                    <rect key="frame" x="442" y="94" width="150" height="18"/>
+                                    <gestureRecognizers/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                    <nil key="highlightedColor"/>
+                                    <connections>
+                                        <outletCollection property="gestureRecognizers" destination="NeI-Cf-38L" appends="YES" id="WCO-br-9aZ"/>
+                                    </connections>
+                                </label>
                             </subviews>
                             <constraints>
+                                <constraint firstItem="x8N-op-tGi" firstAttribute="centerY" secondItem="adz-Id-exQ" secondAttribute="centerY" id="5Xg-6s-NKY"/>
                                 <constraint firstItem="Frl-iN-z56" firstAttribute="leading" secondItem="Pzm-Lu-ZSd" secondAttribute="trailing" constant="8" id="8Uo-fF-agv"/>
+                                <constraint firstItem="cuY-9E-by7" firstAttribute="bottom" secondItem="adz-Id-exQ" secondAttribute="bottomMargin" id="9Lp-Q1-JX9"/>
                                 <constraint firstItem="Pzm-Lu-ZSd" firstAttribute="centerY" secondItem="adz-Id-exQ" secondAttribute="centerY" id="FHD-b7-zBn"/>
+                                <constraint firstItem="cuY-9E-by7" firstAttribute="trailing" secondItem="adz-Id-exQ" secondAttribute="trailingMargin" id="HT7-dw-d2L"/>
                                 <constraint firstItem="x8N-op-tGi" firstAttribute="trailing" secondItem="adz-Id-exQ" secondAttribute="trailingMargin" id="KPq-GX-NK8"/>
                                 <constraint firstItem="Pzm-Lu-ZSd" firstAttribute="leading" secondItem="adz-Id-exQ" secondAttribute="leadingMargin" id="L8w-aa-b8V"/>
                                 <constraint firstItem="Frl-iN-z56" firstAttribute="trailing" secondItem="adz-Id-exQ" secondAttribute="trailingMargin" id="MI8-EQ-hEk"/>
+                                <constraint firstItem="Frl-iN-z56" firstAttribute="top" secondItem="Pzm-Lu-ZSd" secondAttribute="top" id="e3g-k7-m5Z"/>
                                 <constraint firstItem="x8N-op-tGi" firstAttribute="leading" secondItem="Pzm-Lu-ZSd" secondAttribute="trailing" constant="8" id="ggQ-Vl-iwz"/>
                             </constraints>
                         </view>
@@ -113,6 +127,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="PlayerView" destination="adz-Id-exQ" id="h3e-Ot-XOh"/>
+                        <outlet property="playModeLabel" destination="cuY-9E-by7" id="WLK-ry-DRM"/>
                         <outlet property="playerImageView" destination="Pzm-Lu-ZSd" id="27k-L0-pso"/>
                         <outlet property="playerViewArtistLabel" destination="x8N-op-tGi" id="zeh-hy-sOc"/>
                         <outlet property="playerViewTitleLabel" destination="Frl-iN-z56" id="pr8-w7-Q9d"/>
@@ -123,6 +138,11 @@
                 <tapGestureRecognizer id="1oU-9E-kyX">
                     <connections>
                         <action selector="tapPlayerImage:" destination="Jxw-2H-c5D" id="v23-cA-8rA"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="NeI-Cf-38L">
+                    <connections>
+                        <action selector="tapPlayModeLabel:" destination="Jxw-2H-c5D" id="AfN-uL-M0v"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
@@ -159,8 +179,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Chart Watch" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="66o-Q0-ns4">
-                                <rect key="frame" x="228" y="136" width="146" height="33"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Chart Watch" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="66o-Q0-ns4">
+                                <rect key="frame" x="227" y="136" width="146" height="33"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -222,8 +242,8 @@
                                     <constraint firstAttribute="width" constant="100" id="zZS-aS-EwP"/>
                                 </constraints>
                             </imageView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="GGv-Ui-Egm">
-                                <rect key="frame" x="382" y="134" width="37" height="37"/>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="GGv-Ui-Egm">
+                                <rect key="frame" x="381" y="134" width="37" height="37"/>
                                 <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </activityIndicatorView>
                         </subviews>

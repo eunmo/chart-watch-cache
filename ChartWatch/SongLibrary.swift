@@ -255,8 +255,6 @@ class SongLibrary {
     }
     
     func fetch() {
-        songIds = [Int:Song]()
-        albumIds = Set<Int>()
         initSections()
         
         let urlAsString = SongLibrary.serverAddress + "/api/ios/fetch" + getLimitParameterString()
@@ -267,6 +265,9 @@ class SongLibrary {
             if error != nil {
                 // should do something
             } else {
+                self.songIds = [Int:Song]()
+                self.albumIds = Set<Int>()
+                
                 let json = JSON(data: data!)
                 
                 for section in self.songSections {

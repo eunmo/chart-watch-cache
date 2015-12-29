@@ -13,10 +13,14 @@ class MoreViewController: UIViewController {
     // MARK: Properties
     
     @IBOutlet weak var subtitleLabel: UILabel!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var pushButton: UIButton!
+    @IBOutlet weak var pullButton: UIButton!
     @IBOutlet weak var updateButton: UIButton!
     @IBOutlet weak var chartedLimitLabel: UILabel!
     @IBOutlet weak var chartedLimitStepper: UIStepper!
+    
+    var inNetworkWait = false
     
     var songLibrary: SongLibrary?
     
@@ -48,14 +52,19 @@ class MoreViewController: UIViewController {
         
         let canPush = songLibrary?.canPush()
         
-        pushButton.enabled = canPush ?? false
-        updateButton.enabled = !(canPush ?? true)
-        
-        /*
-        subtitleLabel.setNeedsDisplay()
-        pushButton.setNeedsDisplay()
-        updateButton.setNeedsDisplay()
-*/
+        if inNetworkWait {
+            activityIndicator.startAnimating()
+            
+            pushButton.enabled = false
+            pullButton.enabled = false
+            updateButton.enabled = false
+        } else {
+            activityIndicator.stopAnimating()
+            
+            pushButton.enabled = canPush ?? false
+            pullButton.enabled = true
+            updateButton.enabled = !(canPush ?? true)
+        }
         
         let chartedLimit = songLibrary?.getLimit("charted") ?? 0
         chartedLimitStepper.value = Double(chartedLimit)
@@ -71,15 +80,8 @@ class MoreViewController: UIViewController {
     }
     
     func receiveNetworkNotification() {
-        /*
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            let alertController = UIAlertController(title: "Network", message: "Request Done", preferredStyle: UIAlertControllerStyle.Alert)
-            alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default,handler: nil))
-            
-            self.presentViewController(alertController, animated: true, completion: nil)
-            
-        })
-*/
+        inNetworkWait = false
+        receiveNotification()
     }
 
     /*
@@ -103,15 +105,23 @@ class MoreViewController: UIViewController {
         }
     }
     
+    func startNetworkReuqest() {
+        inNetworkWait = true
+        receiveNotification()
+    }
+    
     @IBAction func push(sender: UIButton) {
+        startNetworkReuqest()
         songLibrary?.push()
     }
     
     @IBAction func pull(sender: UIButton) {
+        startNetworkReuqest()
         songLibrary?.pull()
     }
     
     @IBAction func update(sender: UIButton) {
+        startNetworkReuqest()
         songLibrary?.fetch()
     }
     

@@ -185,7 +185,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     // MARK: Actions
     
     @IBAction func reload(sender: UIBarButtonItem) {
-        let song = songLibrary?.getRandomSong()
+        let song = songLibrary?.selectRandomSong()
             print ("random selected \(song!.name)")
         if song != nil {
             playSong(song!)

@@ -19,6 +19,7 @@ class SongLibrary {
     var shuffleId = 0
     var shuffle = false
     var stop = false
+    var bedtime = 0
     
     var songIds = [Int:Song]()
     var albumIds = Set<Int>()
@@ -90,10 +91,15 @@ class SongLibrary {
         }
     }
     
-    func getRandomSong() -> Song? {
+    func selectRandomSong() -> Song? {
+        bedtime = 0
         stop = false
         selected = false
         
+        return getRandomSong()
+    }
+    
+    func getRandomSong() -> Song? {
         if songIds.count > 0 {
             shuffle = true
             let randomIndex = Int(arc4random_uniform(UInt32(songIds.count)))
@@ -145,6 +151,12 @@ class SongLibrary {
         if stop {
             return nil
         } else if shuffle {
+            if bedtime > 0 {
+                bedtime--
+                if bedtime == 0 {
+                    stop = true
+                }
+            }
             return getRandomSong()
         } else if selected {
             if curSongIndex + 1 < sections[curSection].count {
@@ -161,18 +173,20 @@ class SongLibrary {
     // MARK: Play Mode
     
     func changePlayMode() {
-        if selected {
-            if stop {
-                stop = false
-            } else if shuffle {
-                shuffle = false
+        if !shuffle { // serial -> shuffle
+            shuffle = true
+        } else if !stop {
+            if bedtime == 0 { // shuffle -> bedtime
+                bedtime = 4
+            } else { // bedtime -> last song
+                bedtime = 0
                 stop = true
-            } else {
-                shuffle = true
             }
-            
-        } else {
-            stop = !stop
+        } else { // last song -> original
+            if selected {
+                shuffle = false
+            }
+            stop = false
         }
     }
     
@@ -187,7 +201,6 @@ class SongLibrary {
                     break
                 }
             }
-            print("\(songSections[index]) \(string)")
         }
         
         assert(!string.isEmpty)
@@ -202,7 +215,9 @@ class SongLibrary {
         
         if stop {
             string += "Last song"
-        } else if shuffle {
+        } else if bedtime > 0 {
+            string += "Bedtime in \(bedtime)"
+        }else if shuffle {
             string += "Shuffle"
         } else {
             string += "Serial"
@@ -286,9 +301,6 @@ class SongLibrary {
     // MARK: Manage
     
     func registerSong(song: Song) {
-        if (songIds[song.id] != nil) {
-            print("\(song.name)")
-        }
         songIds[song.id] = song
         albumIds.insert(song.album)
     }

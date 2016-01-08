@@ -42,7 +42,7 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Play mode: sequential" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cuY-9E-by7">
-                                    <rect key="frame" x="442" y="94" width="150" height="18"/>
+                                    <rect key="frame" x="116" y="94" width="476" height="18"/>
                                     <gestureRecognizers/>
                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -61,6 +61,7 @@
                                 <constraint firstItem="x8N-op-tGi" firstAttribute="trailing" secondItem="adz-Id-exQ" secondAttribute="trailingMargin" id="KPq-GX-NK8"/>
                                 <constraint firstItem="Pzm-Lu-ZSd" firstAttribute="leading" secondItem="adz-Id-exQ" secondAttribute="leadingMargin" id="L8w-aa-b8V"/>
                                 <constraint firstItem="Frl-iN-z56" firstAttribute="trailing" secondItem="adz-Id-exQ" secondAttribute="trailingMargin" id="MI8-EQ-hEk"/>
+                                <constraint firstItem="cuY-9E-by7" firstAttribute="leading" secondItem="Pzm-Lu-ZSd" secondAttribute="trailing" constant="8" id="Y5O-tg-WqG"/>
                                 <constraint firstItem="Frl-iN-z56" firstAttribute="top" secondItem="Pzm-Lu-ZSd" secondAttribute="top" id="e3g-k7-m5Z"/>
                                 <constraint firstItem="x8N-op-tGi" firstAttribute="leading" secondItem="Pzm-Lu-ZSd" secondAttribute="trailing" constant="8" id="ggQ-Vl-iwz"/>
                             </constraints>

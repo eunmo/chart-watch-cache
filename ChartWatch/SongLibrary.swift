@@ -124,13 +124,19 @@ class SongLibrary {
         }
     }
     
-    func recordPlay() {
+    func getSelectedSong() -> Song? {
         if selected {
-            let selectedSong = sections[curSection][curSongIndex]
-            selectedSong.recordPlay()
-            save()
+            return sections[curSection][curSongIndex]
         } else if shuffle {
-            songIds[shuffleId]?.recordPlay()
+            return songIds[shuffleId]
+        } else {
+            return nil
+        }
+    }
+    
+    func recordPlay() {
+        if let song = getSelectedSong() {
+            song.recordPlay()
             save()
         }
     }
@@ -152,6 +158,8 @@ class SongLibrary {
         return nil
     }
     
+    // MARK: Play Mode
+    
     func changePlayMode() {
         if selected {
             if stop {
@@ -168,14 +176,41 @@ class SongLibrary {
         }
     }
     
-    func getPlayModeString() -> String {
-        if stop {
-            return "last song"
-        } else if shuffle {
-            return "shuffle"
-        } else {
-            return "sequential"
+    func getSongDisplayString() -> String {
+        var string = ""
+        let song = getSelectedSong()!
+        
+        for (index, section) in sections.enumerate() {
+            for sectionSong in section {
+                if song.id == sectionSong.id {
+                    string += " / \(songSections[index].capitalizedString)"
+                    break
+                }
+            }
+            print("\(songSections[index]) \(string)")
         }
+        
+        assert(!string.isEmpty)
+        
+        string += " / \(song.plays) play" + (song.plays > 1 ? "s" : "")
+        
+        return string
+    }
+    
+    func getPlayModeString() -> String {
+        var string = ""
+        
+        if stop {
+            string += "Last song"
+        } else if shuffle {
+            string += "Shuffle"
+        } else {
+            string += "Serial"
+        }
+        
+        string += getSongDisplayString()
+        
+        return string
     }
     
     func getSectionHeaderString(section: Int) -> String {
@@ -251,6 +286,9 @@ class SongLibrary {
     // MARK: Manage
     
     func registerSong(song: Song) {
+        if (songIds[song.id] != nil) {
+            print("\(song.name)")
+        }
         songIds[song.id] = song
         albumIds.insert(song.album)
     }

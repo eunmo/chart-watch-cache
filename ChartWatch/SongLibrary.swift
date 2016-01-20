@@ -101,6 +101,7 @@ class SongLibrary {
     
     func getRandomSong() -> Song? {
         if songIds.count > 0 {
+            selected = false
             shuffle = true
             let randomIndex = Int(arc4random_uniform(UInt32(songIds.count)))
             let song = Array(songIds.values)[randomIndex]

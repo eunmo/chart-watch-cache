@@ -14,6 +14,7 @@ class SongSectionTableViewCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var playCountLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

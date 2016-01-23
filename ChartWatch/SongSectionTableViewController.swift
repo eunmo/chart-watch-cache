@@ -68,6 +68,11 @@ class SongSectionTableViewController: UITableViewController {
             cell.albumImageView.image = nil
             cell.activityIndicator.startAnimating()
         }
+        cell.playCountLabel.text = "\(song.plays)"
+        let red = CGFloat(100 - song.plays) / 100.0
+        cell.playCountLabel.backgroundColor = UIColor(red: 1.0 - red, green: 0.5, blue: red, alpha: 0.3)
+        cell.playCountLabel.layer.cornerRadius = 8.0
+        cell.playCountLabel.layer.masksToBounds = true
 
         return cell
     }

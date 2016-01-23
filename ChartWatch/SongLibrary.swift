@@ -69,16 +69,20 @@ class SongLibrary {
     }
     
     func getSectionSongCount(section: Int) -> Int {
-        if section < 0 || section >= getSectionCount() {
+        if section < 0 || section > getSectionCount() {
             return 0
+        } else if section == getSectionCount() {
+            return getLocallyPlayedSongs().count
         } else {
             return sections[section].count
         }
     }
     
     func getSectionLoadedSongCount(section: Int) -> Int {
-        if section < 0 || section >= getSectionCount() {
+        if section < 0 || section > getSectionCount() {
             return 0
+        } else if section == getSectionCount() {
+            return getLocallyPlayedSongs().count
         } else {
             var count = 0
             
@@ -96,12 +100,9 @@ class SongLibrary {
         return songIds.count
     }
     
-    func getSongAtIndex(index: NSIndexPath) -> Song? {
-        let section = index.section
-        let row = index.row
-        
-        if row < sections[section].count {
-            return sections[section][row]
+    func getSongAtIndex(section: Int, index: Int) -> Song? {
+        if section < sections.count && index < sections[section].count {
+            return sections[section][index]
         } else {
             return nil
         }
@@ -130,18 +131,16 @@ class SongLibrary {
         return nil
     }
     
-    func selectSongAtIndex(index: NSIndexPath) -> Song? {
-        let section = index.section
-        let row = index.row
+    func selectSongAtIndex(section: Int, index: Int) -> Song? {
         
         stop = false
         shuffle = false
         
-        if row < sections[section].count {
+        if let song = getSongAtIndex(section, index: index) {
             curSection = section
-            curSongIndex = row
+            curSongIndex = index
             selected = true
-            return sections[section][row]
+            return song
         } else {
             return nil
         }
@@ -185,6 +184,32 @@ class SongLibrary {
         selected = false
         shuffle = false
         return nil
+    }
+    
+    // MARK: Locally Played
+    
+    func getLocallyPlayedSongs() -> [Song] {
+        var locallyPlayedSongs = [Song]()
+        
+        for (_, song) in songIds {
+            if song.lastPlayed != nil {
+               locallyPlayedSongs.append(song)
+            }
+        }
+        
+        locallyPlayedSongs.sortInPlace({ $0.lastPlayed!.compare($1.lastPlayed!) == NSComparisonResult.OrderedAscending })
+        
+        return locallyPlayedSongs
+    }
+    
+    func getSectionSongs(section: Int) -> [Song] {
+        if section < 0 || section > getSectionCount() {
+            return [Song]()
+        } else if section == getSectionCount() {
+            return getLocallyPlayedSongs()
+        } else {
+            return sections[section]
+        }
     }
     
     // MARK: Play Mode
@@ -245,12 +270,12 @@ class SongLibrary {
         return string
     }
     
-    func getSectionHeaderString(section: Int) -> String {
-        return "\(sections[section].count) \(songSections[section]) songs"
-    }
-    
     func getSectionName(section: Int) -> String {
-        return "\(songSections[section].capitalizedString) Songs"
+        if section == sections.count {
+            return "Locally Played Songs"
+        } else {
+            return "\(songSections[section].capitalizedString) Songs"
+        }
     }
     
     // MARK: Limits
@@ -429,7 +454,7 @@ class SongLibrary {
                         imageDeleteCount++
                     }
                     imageCount++
-                case "jepg":
+                case "jpeg":
                     if let album = Int((file.URLByDeletingPathExtension?.lastPathComponent)!) where !albumIds.contains(album) {
                         try NSFileManager.defaultManager().removeItemAtURL(file)
                         largeImageDeleteCount++

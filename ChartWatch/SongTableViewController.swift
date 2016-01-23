@@ -73,7 +73,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return songLibrary?.getSectionCount() ?? 0
+        return songLibrary!.getSectionCount() + 1
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

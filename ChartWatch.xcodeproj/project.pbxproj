@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		545247D71C53A4CA005DFF82 /* SongSectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545247D61C53A4CA005DFF82 /* SongSectionTableViewController.swift */; };
+		545247D91C53AA1C005DFF82 /* SongSectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545247D81C53AA1C005DFF82 /* SongSectionTableViewCell.swift */; };
 		54FFAF1B1C280D2800842F36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FFAF1A1C280D2800842F36 /* AppDelegate.swift */; };
 		54FFAF201C280D2800842F36 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54FFAF1E1C280D2800842F36 /* Main.storyboard */; };
 		54FFAF221C280D2800842F36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 54FFAF211C280D2800842F36 /* Assets.xcassets */; };
@@ -32,6 +34,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		545247D61C53A4CA005DFF82 /* SongSectionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongSectionTableViewController.swift; sourceTree = "<group>"; };
+		545247D81C53AA1C005DFF82 /* SongSectionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongSectionTableViewCell.swift; sourceTree = "<group>"; };
 		54FFAF171C280D2800842F36 /* ChartWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChartWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		54FFAF1A1C280D2800842F36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		54FFAF1F1C280D2800842F36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -92,11 +96,13 @@
 				54FFAF461C284A4300842F36 /* SwiftyJSON.swift */,
 				54FFAF1A1C280D2800842F36 /* AppDelegate.swift */,
 				54FFAF1E1C280D2800842F36 /* Main.storyboard */,
+				54FFAF481C2CFECF00842F36 /* CustomTabBarController.swift */,
 				54FFAF421C282A0B00842F36 /* SongTableViewCell.swift */,
 				54FFAF3A1C28283300842F36 /* SongTableViewController.swift */,
-				54FFAF4A1C2CFF0300842F36 /* SongLibrary.swift */,
-				54FFAF481C2CFECF00842F36 /* CustomTabBarController.swift */,
+				545247D81C53AA1C005DFF82 /* SongSectionTableViewCell.swift */,
+				545247D61C53A4CA005DFF82 /* SongSectionTableViewController.swift */,
 				54FFAF501C2D152E00842F36 /* MoreViewController.swift */,
+				54FFAF4A1C2CFF0300842F36 /* SongLibrary.swift */,
 				54FFAF401C2828D800842F36 /* Song.swift */,
 				54FFAF211C280D2800842F36 /* Assets.xcassets */,
 				54FFAF231C280D2800842F36 /* LaunchScreen.storyboard */,
@@ -230,6 +236,8 @@
 				54FFAF471C284A4300842F36 /* SwiftyJSON.swift in Sources */,
 				54FFAF3B1C28283300842F36 /* SongTableViewController.swift in Sources */,
 				54FFAF1B1C280D2800842F36 /* AppDelegate.swift in Sources */,
+				545247D91C53AA1C005DFF82 /* SongSectionTableViewCell.swift in Sources */,
+				545247D71C53A4CA005DFF82 /* SongSectionTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

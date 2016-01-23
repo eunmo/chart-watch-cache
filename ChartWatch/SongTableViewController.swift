@@ -69,42 +69,29 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return songLibrary?.getSectionCount() ?? 1
+        return 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return songLibrary?.getSectionSongCount(section) ?? 0
+        return songLibrary?.getSectionCount() ?? 0
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cellIdentifier = "SongTableViewCell"
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! SongTableViewCell
-
-        // Fetch song
-        let song = songLibrary!.getSongAtIndex(indexPath)!
+        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath)
         
         // Configure the cell...
-        cell.nameLabel.text = song.name
-        cell.artistLabel.text = song.artist
-        if song.loaded {
-            cell.albumImageView.image = song.photo
-            cell.activityIndicator.stopAnimating()
+        cell.textLabel?.text = songLibrary!.getSectionName(indexPath.row)
+        
+        let songCount = songLibrary!.getSectionSongCount(indexPath.row)
+        let loadedCount = songLibrary!.getSectionLoadedSongCount(indexPath.row)
+        if songCount == loadedCount {
+            cell.detailTextLabel?.text = "\(songCount) Songs"
         } else {
-            cell.albumImageView.image = nil
-            cell.activityIndicator.startAnimating()
+            cell.detailTextLabel?.text = "\(loadedCount)/\(songCount) Songs"
         }
 
         return cell
-    }
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if let song = songLibrary!.selectSongAtIndex(indexPath) {
-            playSong(song)
-        }
-    }
-    
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String {
-        return songLibrary?.getSectionHeaderString(section) ?? ""
     }
     
     func playSong(song: Song) {
@@ -171,22 +158,31 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
         return true
     }
     */
-
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+        if let identifier = segue.identifier {
+            switch identifier {
+            case "Show Section":
+                if let vc = segue.destinationViewController as? SongSectionTableViewController {
+                    vc.player = self
+                    vc.songLibrary = songLibrary
+                    vc.section = tableView.indexPathForSelectedRow!.row
+                }
+                
+            default: break
+            }
+        }
     }
-    */
 
     // MARK: Actions
     
     @IBAction func reload(sender: UIBarButtonItem) {
         let song = songLibrary?.selectRandomSong()
-            print ("random selected \(song!.name)")
         if song != nil {
             playSong(song!)
         }

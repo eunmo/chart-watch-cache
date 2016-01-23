@@ -76,6 +76,22 @@ class SongLibrary {
         }
     }
     
+    func getSectionLoadedSongCount(section: Int) -> Int {
+        if section < 0 || section >= getSectionCount() {
+            return 0
+        } else {
+            var count = 0
+            
+            for song in sections[section] {
+                if song.loaded {
+                    count++
+                }
+            }
+            
+            return count
+        }
+    }
+    
     func getCount() -> Int {
         return songIds.count
     }
@@ -231,6 +247,10 @@ class SongLibrary {
     
     func getSectionHeaderString(section: Int) -> String {
         return "\(sections[section].count) \(songSections[section]) songs"
+    }
+    
+    func getSectionName(section: Int) -> String {
+        return "\(songSections[section].capitalizedString) Songs"
     }
     
     // MARK: Limits

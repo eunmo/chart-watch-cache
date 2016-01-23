@@ -112,7 +112,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
             
             playerViewTitleLabel.text = song.name
             playerViewArtistLabel.text = song.artist
-            playerImageView.image = song.extractedImage
+            playerImageView.image = song.largePhoto
             
             loaded = true
             

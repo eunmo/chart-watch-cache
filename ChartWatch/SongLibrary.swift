@@ -410,8 +410,10 @@ class SongLibrary {
             let files = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(SongLibrary.DocumentsDirectory, includingPropertiesForKeys: [], options: [])
             var mediaCount = 0
             var imageCount = 0
+            var largeImageCount = 0
             var mediaDeleteCount = 0
             var imageDeleteCount = 0
+            var largeImageDeleteCount = 0
             
             for file in files {
                 switch file.pathExtension! {
@@ -427,11 +429,17 @@ class SongLibrary {
                         imageDeleteCount++
                     }
                     imageCount++
+                case "jepg":
+                    if let album = Int((file.URLByDeletingPathExtension?.lastPathComponent)!) where !albumIds.contains(album) {
+                        try NSFileManager.defaultManager().removeItemAtURL(file)
+                        largeImageDeleteCount++
+                    }
+                    largeImageCount++
                 default: break
                 }
             }
             
-            message = "\(mediaDeleteCount)/\(mediaCount) media files\n\(imageDeleteCount)/\(imageCount) image files"
+            message = "\(mediaDeleteCount)/\(mediaCount) media files\n\(imageDeleteCount)/\(imageCount) image files\n\(largeImageDeleteCount)/\(largeImageCount) large image files"
             
             
         } catch {

@@ -21,8 +21,8 @@ class Song: NSObject, NSCoding {
     var lastPlayed: NSDate?
     
     var photo: UIImage?
+    var largePhoto: UIImage?
     var loaded: Bool
-    var extractedImage: UIImage?
     
     // MARK: Types
     
@@ -73,23 +73,13 @@ class Song: NSObject, NSCoding {
     // MARK: Information
     
     func getNowPlayingInfo() -> [String:AnyObject] {
-        let url = getMediaUrl()
-        let playerItem = AVPlayerItem(URL: url)  //this will be your audio source
         var nowPlayingInfo:[String: AnyObject] = [
             MPMediaItemPropertyTitle: name,
             MPMediaItemPropertyArtist: artist,
         ]
         
-        let metadataList = playerItem.asset.metadata
-        for item in metadataList {
-            if item.commonKey != nil && item.value != nil {
-                if item.commonKey  == "artwork" {
-                    if let image = UIImage(data: item.value as! NSData) {
-                        extractedImage = image
-                        nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: image)
-                    }
-                }
-            }
+        if let image = largePhoto {
+            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: image)
         }
         
         return nowPlayingInfo
@@ -138,7 +128,7 @@ class Song: NSObject, NSCoding {
         if let filePath = getImageUrl().path where NSFileManager.defaultManager().fileExistsAtPath(filePath) {
             photo = UIImage(contentsOfFile: filePath)
             if (photo != nil) {
-                loadMedia()
+                loadLargeImage()
                 return
             }
         }
@@ -150,6 +140,48 @@ class Song: NSObject, NSCoding {
         let query = urlSession.dataTaskWithURL(url, completionHandler: { data, response, error -> Void in
             if data != nil {
                 self.saveImage(data!)
+                self.loadLargeImage()
+            } else {
+                self.load()
+            }
+        })
+        
+        query.resume()
+    }
+    
+    // MARK: Large Image
+    
+    func getLargeImageUrl() -> NSURL {
+        return SongLibrary.DocumentsDirectory.URLByAppendingPathComponent("\(album).jpeg")
+    }
+    
+    func saveLargeImage(data: NSData) {
+        largePhoto = UIImage(data: data)
+        
+        let fileUrl = getLargeImageUrl()
+        
+        data.writeToURL(fileUrl, atomically: true)
+        
+        print("Saving large image to \(fileUrl)")
+    }
+    
+    func loadLargeImage() {
+        
+        if let filePath = getLargeImageUrl().path where NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+            largePhoto = UIImage(contentsOfFile: filePath)
+            if (largePhoto != nil) {
+                loadMedia()
+                return
+            }
+        }
+        
+        let urlAsString = "\(SongLibrary.serverAddress)/\(album).jpg"
+        let url = NSURL(string: urlAsString)!
+        let urlSession = NSURLSession.sharedSession()
+        
+        let query = urlSession.dataTaskWithURL(url, completionHandler: { data, response, error -> Void in
+            if data != nil {
+                self.saveLargeImage(data!)
                 self.loadMedia()
             } else {
                 self.load()

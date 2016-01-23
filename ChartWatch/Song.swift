@@ -143,7 +143,7 @@ class Song: NSObject, NSCoding {
             }
         }
         
-        let urlAsString = "http://39.118.139.72:3000/\(album).80px.jpg"
+        let urlAsString = "\(SongLibrary.serverAddress)/\(album).80px.jpg"
         let url = NSURL(string: urlAsString)!
         let urlSession = NSURLSession.sharedSession()
         
@@ -182,7 +182,7 @@ class Song: NSObject, NSCoding {
             return
         }
         
-        let urlAsString = "http://39.118.139.72:3000/music/\(id).mp3"
+        let urlAsString = "\(SongLibrary.serverAddress)/music/\(id).mp3"
         let url = NSURL(string: urlAsString)!
         let urlSession = NSURLSession.sharedSession()
         

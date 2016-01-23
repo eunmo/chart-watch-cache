@@ -37,7 +37,7 @@ class SongLibrary {
     
     static let notificationKey = "songLibraryNotificationKey"
     static let networkNotificationKey = "songLibraryNetworkNotificationKey"
-    static let serverAddress = "http://39.118.139.72:3000"
+    static let serverAddress = "http://211.200.135.97:3000"
     
     // MARK: Constructor
     

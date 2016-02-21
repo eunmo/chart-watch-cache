@@ -329,7 +329,6 @@ class SongLibrary {
             for section in sections {
                 for song in section {
                     registerSong(song)
-                    song.load()
                 }
             }
         }
@@ -346,9 +345,15 @@ class SongLibrary {
     
     // MARK: Manage
     
-    func registerSong(song: Song) {
-        songIds[song.id] = song
-        albumIds.insert(song.album)
+    func registerSong(song: Song) -> Song {
+        if let oldSong = songIds[song.id] {
+            return oldSong
+        } else {
+            songIds[song.id] = song
+            albumIds.insert(song.album)
+            song.load()
+            return song
+        }
     }
     
     func songFromJSON(songRow: JSON) -> Song {
@@ -379,10 +384,9 @@ class SongLibrary {
         let sectionIndex = songSections.indexOf(section)!
         
         for (_, songRow) in jsonSection {
-            let song = songFromJSON(songRow)
+            let jsonSong = songFromJSON(songRow)
+            let song = registerSong(jsonSong)
             sections[sectionIndex] += [song]
-            registerSong(song)
-            song.load()
         }
     }
     

@@ -295,18 +295,6 @@
                                     <action selector="update:" destination="Elh-gf-nQm" eventType="touchUpInside" id="MGr-G6-mE7"/>
                                 </connections>
                             </button>
-                            <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="10000" stepValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="YdP-gF-QxZ">
-                                <rect key="frame" x="200" y="390" width="94" height="29"/>
-                                <connections>
-                                    <action selector="chartedLimitChanged:" destination="Elh-gf-nQm" eventType="valueChanged" id="WZB-98-1DS"/>
-                                </connections>
-                            </stepper>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L7H-DD-0Dn">
-                                <rect key="frame" x="302" y="394" width="278" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Chi" translatesAutoresizingMaskIntoConstraints="NO" id="9Uh-Te-amQ">
                                 <rect key="frame" x="250" y="28" width="100" height="100"/>
                                 <constraints>
@@ -324,10 +312,7 @@
                             <constraint firstItem="66o-Q0-ns4" firstAttribute="centerX" secondItem="FLa-eL-LYT" secondAttribute="centerX" id="1Dr-kS-4Wa"/>
                             <constraint firstItem="r6W-df-RQr" firstAttribute="top" secondItem="FXq-dQ-1Cb" secondAttribute="bottom" constant="8" id="4Tk-i5-fzO"/>
                             <constraint firstItem="tmd-bi-EyW" firstAttribute="centerX" secondItem="FLa-eL-LYT" secondAttribute="centerX" id="5m5-qh-IfB"/>
-                            <constraint firstItem="YdP-gF-QxZ" firstAttribute="top" secondItem="tmd-bi-EyW" secondAttribute="bottom" constant="8" id="7sM-zF-uFX"/>
-                            <constraint firstItem="L7H-DD-0Dn" firstAttribute="trailing" secondItem="FLa-eL-LYT" secondAttribute="trailingMargin" id="9nq-Kd-YWL"/>
                             <constraint firstItem="dOe-24-Ug5" firstAttribute="top" secondItem="r6W-df-RQr" secondAttribute="bottom" constant="8" id="FhK-GE-voE"/>
-                            <constraint firstItem="YdP-gF-QxZ" firstAttribute="centerX" secondItem="FLa-eL-LYT" secondAttribute="centerX" constant="-53" id="G0Y-e5-j9W"/>
                             <constraint firstItem="dOe-24-Ug5" firstAttribute="centerX" secondItem="FLa-eL-LYT" secondAttribute="centerX" id="R2v-hZ-NBg"/>
                             <constraint firstItem="GGv-Ui-Egm" firstAttribute="centerY" secondItem="66o-Q0-ns4" secondAttribute="centerY" id="UbO-EP-Rxn"/>
                             <constraint firstItem="pm9-6O-iqn" firstAttribute="top" secondItem="66o-Q0-ns4" secondAttribute="bottom" constant="8" id="Yho-bj-bZr"/>
@@ -342,16 +327,13 @@
                             <constraint firstItem="66o-Q0-ns4" firstAttribute="top" secondItem="9Uh-Te-amQ" secondAttribute="bottom" constant="8" id="eps-V8-4GK"/>
                             <constraint firstItem="FXq-dQ-1Cb" firstAttribute="top" secondItem="pm9-6O-iqn" secondAttribute="bottom" constant="8" id="evG-xp-3WU"/>
                             <constraint firstItem="GGv-Ui-Egm" firstAttribute="leading" secondItem="r6W-df-RQr" secondAttribute="trailing" constant="8" id="fDf-Nb-uzt"/>
-                            <constraint firstItem="L7H-DD-0Dn" firstAttribute="leading" secondItem="YdP-gF-QxZ" secondAttribute="trailing" constant="8" id="ggK-hR-Iox"/>
                             <constraint firstItem="9Uh-Te-amQ" firstAttribute="top" secondItem="w5f-eJ-yPz" secondAttribute="bottom" constant="8" id="h32-Qc-vfn"/>
                             <constraint firstItem="66o-Q0-ns4" firstAttribute="leading" secondItem="FLa-eL-LYT" secondAttribute="leadingMargin" id="inu-CQ-vqy"/>
                             <constraint firstItem="r6W-df-RQr" firstAttribute="centerX" secondItem="FLa-eL-LYT" secondAttribute="centerX" id="kCS-xC-xGZ"/>
                             <constraint firstItem="9Uh-Te-amQ" firstAttribute="top" secondItem="w5f-eJ-yPz" secondAttribute="bottom" constant="8" id="ovP-w5-LS8"/>
-                            <constraint firstItem="YdP-gF-QxZ" firstAttribute="top" secondItem="tmd-bi-EyW" secondAttribute="bottom" constant="8" id="pBk-OC-7Yd"/>
                             <constraint firstItem="GGv-Ui-Egm" firstAttribute="centerY" secondItem="9Uh-Te-amQ" secondAttribute="centerY" id="tW9-nO-vc7"/>
                             <constraint firstItem="9Uh-Te-amQ" firstAttribute="centerX" secondItem="FLa-eL-LYT" secondAttribute="centerX" id="vMP-Bk-bL1"/>
                             <constraint firstItem="GGv-Ui-Egm" firstAttribute="centerX" secondItem="9Uh-Te-amQ" secondAttribute="centerX" id="vdB-e9-u1q"/>
-                            <constraint firstItem="L7H-DD-0Dn" firstAttribute="centerY" secondItem="YdP-gF-QxZ" secondAttribute="centerY" id="x6Z-VP-i7J"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -363,15 +345,12 @@
                                 <exclude reference="fDf-Nb-uzt"/>
                                 <exclude reference="tW9-nO-vc7"/>
                                 <exclude reference="vdB-e9-u1q"/>
-                                <exclude reference="pBk-OC-7Yd"/>
                             </mask>
                         </variation>
                     </view>
                     <tabBarItem key="tabBarItem" systemItem="more" id="5ow-Xg-d7J"/>
                     <connections>
                         <outlet property="activityIndicator" destination="GGv-Ui-Egm" id="Ucl-ON-pwT"/>
-                        <outlet property="chartedLimitLabel" destination="L7H-DD-0Dn" id="bsY-xh-3JQ"/>
-                        <outlet property="chartedLimitStepper" destination="YdP-gF-QxZ" id="9Ps-cT-quy"/>
                         <outlet property="pullButton" destination="dOe-24-Ug5" id="Daf-un-Lpp"/>
                         <outlet property="pushButton" destination="r6W-df-RQr" id="DWF-G6-yo7"/>
                         <outlet property="subtitleLabel" destination="pm9-6O-iqn" id="ybm-05-tmr"/>

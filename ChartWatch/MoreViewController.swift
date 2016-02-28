@@ -17,8 +17,6 @@ class MoreViewController: UIViewController {
     @IBOutlet weak var pushButton: UIButton!
     @IBOutlet weak var pullButton: UIButton!
     @IBOutlet weak var updateButton: UIButton!
-    @IBOutlet weak var chartedLimitLabel: UILabel!
-    @IBOutlet weak var chartedLimitStepper: UIStepper!
     
     var inNetworkWait = false
     
@@ -65,10 +63,6 @@ class MoreViewController: UIViewController {
             pullButton.enabled = true
             updateButton.enabled = !(canPush ?? true)
         }
-        
-        let chartedLimit = songLibrary?.getLimit("charted") ?? 0
-        chartedLimitStepper.value = Double(chartedLimit)
-        chartedLimitLabel.text = "\(Int(chartedLimitStepper.value)) charted songs"
         
         print ("Update UI")
     }
@@ -123,11 +117,5 @@ class MoreViewController: UIViewController {
     @IBAction func update(sender: UIButton) {
         startNetworkReuqest()
         songLibrary?.fetch()
-    }
-    
-    @IBAction func chartedLimitChanged(sender: UIStepper) {
-        let limit = Int(sender.value)
-        chartedLimitLabel.text = "\(limit) charted songs"
-        songLibrary?.setLimit("charted", limit: limit)
     }
 }

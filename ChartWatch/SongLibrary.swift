@@ -24,8 +24,8 @@ class SongLibrary {
     var songIds = [Int:Song]()
     var albumIds = Set<Int>()
     let dateFormatter: NSDateFormatter = NSDateFormatter()
-    let songSections = ["current", "seasonal", "charted", "uncharted"]
-    var sectionLimits = [100, 3, 300, 300]
+    let songSections = ["current", "album", "seasonal", "charted", "uncharted"]
+    var sectionLimits = [100, 100, 3, 300, 300]
     
     // MARK: Archiving Paths
     
@@ -88,7 +88,7 @@ class SongLibrary {
             
             for song in sections[section] {
                 if song.loaded {
-                    count++
+                    count += 1
                 }
             }
             
@@ -168,7 +168,7 @@ class SongLibrary {
             return nil
         } else if shuffle {
             if bedtime > 0 {
-                bedtime--
+                bedtime -= 1
                 if bedtime == 0 {
                     stop = true
                 }
@@ -176,7 +176,7 @@ class SongLibrary {
             return getRandomSong()
         } else if selected {
             if curSongIndex + 1 < sections[curSection].count {
-                curSongIndex++
+                curSongIndex += 1
                 return sections[curSection][curSongIndex]
             }
         }
@@ -406,14 +406,15 @@ class SongLibrary {
                 
                 let json = JSON(data: data!)
                 
+                self.initSections()
                 for section in self.songSections {
                     print(section)
                     self.sectionFromJSON(section, json: json)
                 }
                 
+                self.cleanup()
                 self.save()
                 self.notifyNetworkDone()
-                print (self.getCount())
             }
         })
         
@@ -449,21 +450,21 @@ class SongLibrary {
                 case "mp3":
                     if let song = Int((file.URLByDeletingPathExtension?.lastPathComponent)!) where songIds[song] == nil {
                         try NSFileManager.defaultManager().removeItemAtURL(file)
-                        mediaDeleteCount++
+                        mediaDeleteCount += 1
                     }
-                    mediaCount++
+                    mediaCount += 1
                 case "jpg":
                     if let album = Int((file.URLByDeletingPathExtension?.lastPathComponent)!) where !albumIds.contains(album) {
                         try NSFileManager.defaultManager().removeItemAtURL(file)
-                        imageDeleteCount++
+                        imageDeleteCount += 1
                     }
-                    imageCount++
+                    imageCount += 1
                 case "jpeg":
                     if let album = Int((file.URLByDeletingPathExtension?.lastPathComponent)!) where !albumIds.contains(album) {
                         try NSFileManager.defaultManager().removeItemAtURL(file)
-                        largeImageDeleteCount++
+                        largeImageDeleteCount += 1
                     }
-                    largeImageCount++
+                    largeImageCount += 1
                 default: break
                 }
             }

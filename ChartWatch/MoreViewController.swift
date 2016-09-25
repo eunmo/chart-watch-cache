@@ -26,8 +26,8 @@ class MoreViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification", name: SongLibrary.notificationKey, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNetworkNotification", name: SongLibrary.networkNotificationKey, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MoreViewController.receiveNotification), name: NSNotification.Name(rawValue: SongLibrary.notificationKey), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MoreViewController.receiveNetworkNotification), name: NSNotification.Name(rawValue: SongLibrary.networkNotificationKey), object: nil)
         
         if let tabBarController = self.tabBarController as? CustomTabBarController {
             songLibrary = tabBarController.songLibrary
@@ -53,22 +53,22 @@ class MoreViewController: UIViewController {
         if inNetworkWait {
             activityIndicator.startAnimating()
             
-            pushButton.enabled = false
-            pullButton.enabled = false
-            updateButton.enabled = false
+            pushButton.isEnabled = false
+            pullButton.isEnabled = false
+            updateButton.isEnabled = false
         } else {
             activityIndicator.stopAnimating()
             
-            pushButton.enabled = canPush ?? false
-            pullButton.enabled = true
-            updateButton.enabled = !(canPush ?? true)
+            pushButton.isEnabled = canPush ?? false
+            pullButton.isEnabled = true
+            updateButton.isEnabled = !(canPush ?? true)
         }
         
         print ("Update UI")
     }
     
     func receiveNotification() {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             self.updateUI()
         })
     }
@@ -90,12 +90,12 @@ class MoreViewController: UIViewController {
 
     // MARK: Action
     
-    @IBAction func cleanup(sender: UIButton) {
+    @IBAction func cleanup(_ sender: UIButton) {
         if let message = songLibrary?.cleanup() {
-            let alertController = UIAlertController(title: "Cleanup", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-            alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default,handler: nil))
+            let alertController = UIAlertController(title: "Cleanup", message: message, preferredStyle: UIAlertControllerStyle.alert)
+            alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default,handler: nil))
             
-            self.presentViewController(alertController, animated: true, completion: nil)
+            self.present(alertController, animated: true, completion: nil)
         }
     }
     
@@ -104,17 +104,17 @@ class MoreViewController: UIViewController {
         receiveNotification()
     }
     
-    @IBAction func push(sender: UIButton) {
+    @IBAction func push(_ sender: UIButton) {
         startNetworkReuqest()
         songLibrary?.push()
     }
     
-    @IBAction func pull(sender: UIButton) {
+    @IBAction func pull(_ sender: UIButton) {
         startNetworkReuqest()
         songLibrary?.pull()
     }
     
-    @IBAction func update(sender: UIButton) {
+    @IBAction func update(_ sender: UIButton) {
         startNetworkReuqest()
         songLibrary?.fetch()
     }

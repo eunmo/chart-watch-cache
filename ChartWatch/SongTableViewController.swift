@@ -33,13 +33,13 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        _ = try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, withOptions: [])
-        _ = try? AVAudioSession.sharedInstance().setActive(true, withOptions: [])
+        _ = try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: [])
+        _ = try? AVAudioSession.sharedInstance().setActive(true, with: [])
         
-        UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+        UIApplication.shared.beginReceivingRemoteControlEvents()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification", name: Song.notificationKey, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification", name: SongLibrary.notificationKey, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SongTableViewController.receiveNotification), name: NSNotification.Name(rawValue: Song.notificationKey), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SongTableViewController.receiveNotification), name: NSNotification.Name(rawValue: SongLibrary.notificationKey), object: nil)
         
         if let tabBarController = self.tabBarController as? CustomTabBarController {
             songLibrary = tabBarController.songLibrary
@@ -56,7 +56,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     }
     
     func receiveNotification() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        DispatchQueue.main.async(execute: { () -> Void in
             self.tableView.reloadData()
         })
     }
@@ -68,23 +68,23 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return songLibrary!.getSectionCount() + 1
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellIdentifier = "SongTableViewCell"
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
         
         // Configure the cell...
-        cell.textLabel?.text = songLibrary!.getSectionName(indexPath.row)
+        cell.textLabel?.text = songLibrary!.getSectionName((indexPath as NSIndexPath).row)
         
-        let songCount = songLibrary!.getSectionSongCount(indexPath.row)
-        let loadedCount = songLibrary!.getSectionLoadedSongCount(indexPath.row)
+        let songCount = songLibrary!.getSectionSongCount((indexPath as NSIndexPath).row)
+        let loadedCount = songLibrary!.getSectionLoadedSongCount((indexPath as NSIndexPath).row)
         if songCount == loadedCount {
             cell.detailTextLabel?.text = "\(songCount) Songs"
         } else {
@@ -94,21 +94,21 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
         return cell
     }
     
-    func playSong(song: Song) {
+    func playSong(_ song: Song) {
         let url = song.getMediaUrl()
         do {
             if playing {
                 player.stop()
             }
             
-            player = try AVAudioPlayer(contentsOfURL: url)
+            player = try AVAudioPlayer(contentsOf: url as URL)
             player.delegate = self
             player.prepareToPlay()
             
             var nowPlayingInfo = song.getNowPlayingInfo()
-            nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = player.duration
-            nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime
-            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = nowPlayingInfo
+            nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = player.duration as AnyObject?
+            nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime as AnyObject?
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
             
             playerViewTitleLabel.text = song.name
             playerViewArtistLabel.text = song.artist
@@ -162,16 +162,16 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         if let identifier = segue.identifier {
             switch identifier {
             case "Show Section":
-                if let vc = segue.destinationViewController as? SongSectionTableViewController {
+                if let vc = segue.destination as? SongSectionTableViewController {
                     vc.player = self
                     vc.songLibrary = songLibrary
-                    vc.section = tableView.indexPathForSelectedRow!.row
+                    vc.section = (tableView.indexPathForSelectedRow! as NSIndexPath).row
                 }
                 
             default: break
@@ -181,18 +181,18 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
 
     // MARK: Actions
     
-    @IBAction func reload(sender: UIBarButtonItem) {
+    @IBAction func reload(_ sender: UIBarButtonItem) {
         let song = songLibrary?.selectRandomSong()
         if song != nil {
             playSong(song!)
         }
     }
     
-    @IBAction func tapPlayerImage(sender: UITapGestureRecognizer) {
+    @IBAction func tapPlayerImage(_ sender: UITapGestureRecognizer) {
         toggle()
     }
     
-    @IBAction func tapPlayModeLabel(sender: UITapGestureRecognizer) {
+    @IBAction func tapPlayModeLabel(_ sender: UITapGestureRecognizer) {
         if playModeLabel.text != "+++" {
             songLibrary?.changePlayMode()
         }
@@ -216,8 +216,8 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
             player.play()
             playing = true
             
-            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration] = player.duration
-            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime
+            MPNowPlayingInfoCenter.default().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration] = player.duration
+            MPNowPlayingInfoCenter.default().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime
             
             playModeLabel.text = "+++"
         }
@@ -232,7 +232,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
         }
     }
     
-    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         if flag {
             songLibrary?.recordPlay()
             if let song = songLibrary?.selectNextSong() {
@@ -243,13 +243,13 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
         }
     }
     
-    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+    override func remoteControlReceived(with event: UIEvent?) {
         switch event!.subtype {
-        case .RemoteControlTogglePlayPause:
+        case .remoteControlTogglePlayPause:
             toggle()
-        case .RemoteControlPlay:
+        case .remoteControlPlay:
             play()
-        case .RemoteControlPause:
+        case .remoteControlPause:
             pause()
         default:break
         }

@@ -27,8 +27,8 @@ class SongSectionTableViewController: UITableViewController {
         self.title = songLibrary!.getSectionName(section)
         update()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification", name: Song.notificationKey, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification", name: SongLibrary.notificationKey, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SongSectionTableViewController.receiveNotification), name: NSNotification.Name(rawValue: Song.notificationKey), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SongSectionTableViewController.receiveNotification), name: NSNotification.Name(rawValue: SongLibrary.notificationKey), object: nil)
     }
     
     func update() {
@@ -37,26 +37,26 @@ class SongSectionTableViewController: UITableViewController {
     }
     
     func receiveNotification() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        DispatchQueue.main.async(execute: { () -> Void in
             self.update()
         })
     }
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return songs?.count ?? 0
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("SongSectionTableViewCell", forIndexPath: indexPath) as! SongSectionTableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SongSectionTableViewCell", for: indexPath) as! SongSectionTableViewCell
 
         // Configure the cell...
-        let song = songs![indexPath.row]
+        let song = songs![(indexPath as NSIndexPath).row]
         
         // Configure the cell...
         cell.nameLabel.text = song.name
@@ -77,12 +77,12 @@ class SongSectionTableViewController: UITableViewController {
         return cell
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String {
         return "\(songs!.count) Songs"
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if let song = songLibrary!.selectSongAtIndex(section, index: indexPath.row) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let song = songLibrary!.selectSongAtIndex(section, index: (indexPath as NSIndexPath).row) {
             player?.playSong(song)
         }
     }

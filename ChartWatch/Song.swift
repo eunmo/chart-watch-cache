@@ -18,7 +18,7 @@ class Song: NSObject, NSCoding {
     var id: Int
     var album: Int
     var plays: Int
-    var lastPlayed: NSDate?
+    var lastPlayed: Date?
     
     var photo: UIImage?
     var largePhoto: UIImage?
@@ -39,7 +39,7 @@ class Song: NSObject, NSCoding {
     
     static let notificationKey = "songNotificationKey"
     
-    init?(name: String, artist: String, id: Int, album: Int, plays: Int, lastPlayed: NSDate?) {
+    init?(name: String, artist: String, id: Int, album: Int, plays: Int, lastPlayed: Date?) {
         // Initialize stored properties.
         self.name = name
         self.artist = artist
@@ -64,8 +64,8 @@ class Song: NSObject, NSCoding {
     // MARK: Update
     
     func recordPlay() {
-        plays++
-        lastPlayed = NSDate()
+        plays += 1
+        lastPlayed = Date()
         
         print ("\(name) played \(plays) times (last played \(lastPlayed))")
     }
@@ -74,8 +74,8 @@ class Song: NSObject, NSCoding {
     
     func getNowPlayingInfo() -> [String:AnyObject] {
         var nowPlayingInfo:[String: AnyObject] = [
-            MPMediaItemPropertyTitle: name,
-            MPMediaItemPropertyArtist: artist,
+            MPMediaItemPropertyTitle: name as AnyObject,
+            MPMediaItemPropertyArtist: artist as AnyObject,
         ]
         
         if let image = largePhoto {
@@ -87,45 +87,46 @@ class Song: NSObject, NSCoding {
     
     // MARK: NSCoding
     
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(name, forKey: PropertyKey.nameKey)
-        aCoder.encodeObject(artist, forKey: PropertyKey.artistKey)
-        aCoder.encodeInteger(id, forKey: PropertyKey.IdKey)
-        aCoder.encodeInteger(album, forKey: PropertyKey.albumKey)
-        aCoder.encodeInteger(plays, forKey: PropertyKey.playsKey)
-        aCoder.encodeObject(lastPlayed, forKey: PropertyKey.lastPlayedKey)
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(name, forKey: PropertyKey.nameKey)
+        aCoder.encode(artist, forKey: PropertyKey.artistKey)
+        aCoder.encode(id, forKey: PropertyKey.IdKey)
+        aCoder.encode(album, forKey: PropertyKey.albumKey)
+        aCoder.encode(plays, forKey: PropertyKey.playsKey)
+        aCoder.encode(lastPlayed, forKey: PropertyKey.lastPlayedKey)
     }
     
     required convenience init?(coder aDecoder: NSCoder) {
-        let name = aDecoder.decodeObjectForKey(PropertyKey.nameKey) as! String
-        let artist = aDecoder.decodeObjectForKey(PropertyKey.artistKey) as! String
-        let id = aDecoder.decodeIntegerForKey(PropertyKey.IdKey)
-        let album = aDecoder.decodeIntegerForKey(PropertyKey.albumKey)
-        let plays = aDecoder.decodeIntegerForKey(PropertyKey.playsKey)
-        let lastPlayed = aDecoder.decodeObjectForKey(PropertyKey.lastPlayedKey) as? NSDate
+        let name = aDecoder.decodeObject(forKey: PropertyKey.nameKey) as! String
+        let artist = aDecoder.decodeObject(forKey: PropertyKey.artistKey) as! String
+        let id = aDecoder.decodeInteger(forKey: PropertyKey.IdKey)
+        let album = aDecoder.decodeInteger(forKey: PropertyKey.albumKey)
+        let plays = aDecoder.decodeInteger(forKey: PropertyKey.playsKey)
+        let lastPlayed = aDecoder.decodeObject(forKey: PropertyKey.lastPlayedKey) as? Date
         
         self.init(name: name, artist: artist, id: id, album: album, plays: plays, lastPlayed: lastPlayed)
     }
     
     // MARK: Image
     
-    func getImageUrl() -> NSURL {
-        return SongLibrary.DocumentsDirectory.URLByAppendingPathComponent("\(album).jpg")
+    func getImageUrl() -> URL {
+        return SongLibrary.DocumentsDirectory.appendingPathComponent("\(album).jpg")
     }
     
-    func saveImage(data: NSData) {
+    func saveImage(_ data: Data) {
         photo = UIImage(data: data)
         
         let fileUrl = getImageUrl()
         
-        data.writeToURL(fileUrl, atomically: true)
+        try? data.write(to: fileUrl, options: [.atomic])
         
         print("Saving image to \(fileUrl)")
     }
     
     func load() {
         
-        if let filePath = getImageUrl().path where NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+        let filePath = getImageUrl().path
+        if FileManager.default.fileExists(atPath: filePath) {
             photo = UIImage(contentsOfFile: filePath)
             if (photo != nil) {
                 loadLargeImage()
@@ -134,10 +135,10 @@ class Song: NSObject, NSCoding {
         }
         
         let urlAsString = "\(SongLibrary.serverAddress)/\(album).80px.jpg"
-        let url = NSURL(string: urlAsString)!
-        let urlSession = NSURLSession.sharedSession()
+        let url = URL(string: urlAsString)!
+        let urlSession = URLSession.shared
         
-        let query = urlSession.dataTaskWithURL(url, completionHandler: { data, response, error -> Void in
+        let query = urlSession.dataTask(with: url, completionHandler: { data, response, error -> Void in
             if data != nil {
                 self.saveImage(data!)
                 self.loadLargeImage()
@@ -151,23 +152,24 @@ class Song: NSObject, NSCoding {
     
     // MARK: Large Image
     
-    func getLargeImageUrl() -> NSURL {
-        return SongLibrary.DocumentsDirectory.URLByAppendingPathComponent("\(album).jpeg")
+    func getLargeImageUrl() -> URL {
+        return SongLibrary.DocumentsDirectory.appendingPathComponent("\(album).jpeg")
     }
     
-    func saveLargeImage(data: NSData) {
+    func saveLargeImage(_ data: Data) {
         largePhoto = UIImage(data: data)
         
         let fileUrl = getLargeImageUrl()
         
-        data.writeToURL(fileUrl, atomically: true)
+        try? data.write(to: fileUrl, options: [.atomic])
         
         print("Saving large image to \(fileUrl)")
     }
     
     func loadLargeImage() {
         
-        if let filePath = getLargeImageUrl().path where NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+        let filePath = getLargeImageUrl().path
+        if FileManager.default.fileExists(atPath: filePath) {
             largePhoto = UIImage(contentsOfFile: filePath)
             if (largePhoto != nil) {
                 loadMedia()
@@ -176,10 +178,10 @@ class Song: NSObject, NSCoding {
         }
         
         let urlAsString = "\(SongLibrary.serverAddress)/\(album).jpg"
-        let url = NSURL(string: urlAsString)!
-        let urlSession = NSURLSession.sharedSession()
+        let url = URL(string: urlAsString)!
+        let urlSession = URLSession.shared
         
-        let query = urlSession.dataTaskWithURL(url, completionHandler: { data, response, error -> Void in
+        let query = urlSession.dataTask(with: url, completionHandler: { data, response, error -> Void in
             if data != nil {
                 self.saveLargeImage(data!)
                 self.loadMedia()
@@ -193,32 +195,33 @@ class Song: NSObject, NSCoding {
     
     // MARK: Media
     
-    func getMediaUrl() -> NSURL {
-        return SongLibrary.DocumentsDirectory.URLByAppendingPathComponent("\(id).mp3")
+    func getMediaUrl() -> URL {
+        return SongLibrary.DocumentsDirectory.appendingPathComponent("\(id).mp3")
     }
     
-    func saveMedia(data: NSData) {
+    func saveMedia(_ data: Data) {
         
         let fileUrl = getMediaUrl()
         
-        data.writeToURL(fileUrl, atomically: true)
+        try? data.write(to: fileUrl, options: [.atomic])
         
         print("Saving media to \(fileUrl)")
     }
     
     func loadMedia() {
         
-        if let filePath = getMediaUrl().path where NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+        let filePath = getMediaUrl().path
+        if FileManager.default.fileExists(atPath: filePath) {
             loaded = true
             notify()
             return
         }
         
         let urlAsString = "\(SongLibrary.serverAddress)/music/\(id).mp3"
-        let url = NSURL(string: urlAsString)!
-        let urlSession = NSURLSession.sharedSession()
+        let url = URL(string: urlAsString)!
+        let urlSession = URLSession.shared
         
-        let query = urlSession.dataTaskWithURL(url, completionHandler: { data, response, error -> Void in
+        let query = urlSession.dataTask(with: url, completionHandler: { data, response, error -> Void in
             if data != nil {
                 self.saveMedia(data!)
                 self.loaded = true
@@ -234,6 +237,6 @@ class Song: NSObject, NSCoding {
     // MARK: Notification
     
     func notify() {
-        NSNotificationCenter.defaultCenter().postNotificationName(Song.notificationKey, object: self)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: Song.notificationKey), object: self)
     }
 }

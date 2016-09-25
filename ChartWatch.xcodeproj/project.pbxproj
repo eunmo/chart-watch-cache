@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		542800401D98127C0003E854 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5428003F1D98127C0003E854 /* SwiftyJSON.swift */; };
 		545247D71C53A4CA005DFF82 /* SongSectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545247D61C53A4CA005DFF82 /* SongSectionTableViewController.swift */; };
 		545247D91C53AA1C005DFF82 /* SongSectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545247D81C53AA1C005DFF82 /* SongSectionTableViewCell.swift */; };
 		54FFAF1B1C280D2800842F36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FFAF1A1C280D2800842F36 /* AppDelegate.swift */; };
@@ -17,7 +18,6 @@
 		54FFAF3B1C28283300842F36 /* SongTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FFAF3A1C28283300842F36 /* SongTableViewController.swift */; };
 		54FFAF411C2828D800842F36 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FFAF401C2828D800842F36 /* Song.swift */; };
 		54FFAF431C282A0B00842F36 /* SongTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FFAF421C282A0B00842F36 /* SongTableViewCell.swift */; };
-		54FFAF471C284A4300842F36 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FFAF461C284A4300842F36 /* SwiftyJSON.swift */; };
 		54FFAF491C2CFECF00842F36 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FFAF481C2CFECF00842F36 /* CustomTabBarController.swift */; };
 		54FFAF4B1C2CFF0300842F36 /* SongLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FFAF4A1C2CFF0300842F36 /* SongLibrary.swift */; };
 		54FFAF511C2D152E00842F36 /* MoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FFAF501C2D152E00842F36 /* MoreViewController.swift */; };
@@ -34,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5428003F1D98127C0003E854 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		545247D61C53A4CA005DFF82 /* SongSectionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongSectionTableViewController.swift; sourceTree = "<group>"; };
 		545247D81C53AA1C005DFF82 /* SongSectionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongSectionTableViewCell.swift; sourceTree = "<group>"; };
 		54FFAF171C280D2800842F36 /* ChartWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChartWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,7 +49,6 @@
 		54FFAF3A1C28283300842F36 /* SongTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongTableViewController.swift; sourceTree = "<group>"; };
 		54FFAF401C2828D800842F36 /* Song.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		54FFAF421C282A0B00842F36 /* SongTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongTableViewCell.swift; sourceTree = "<group>"; };
-		54FFAF461C284A4300842F36 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		54FFAF481C2CFECF00842F36 /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		54FFAF4A1C2CFF0300842F36 /* SongLibrary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongLibrary.swift; sourceTree = "<group>"; };
 		54FFAF501C2D152E00842F36 /* MoreViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoreViewController.swift; sourceTree = "<group>"; };
@@ -93,7 +93,7 @@
 		54FFAF191C280D2800842F36 /* ChartWatch */ = {
 			isa = PBXGroup;
 			children = (
-				54FFAF461C284A4300842F36 /* SwiftyJSON.swift */,
+				5428003F1D98127C0003E854 /* SwiftyJSON.swift */,
 				54FFAF1A1C280D2800842F36 /* AppDelegate.swift */,
 				54FFAF1E1C280D2800842F36 /* Main.storyboard */,
 				54FFAF481C2CFECF00842F36 /* CustomTabBarController.swift */,
@@ -165,12 +165,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Eunmo Yang";
 				TargetAttributes = {
 					54FFAF161C280D2800842F36 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = 6HUL83HTGD;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -180,6 +181,7 @@
 					54FFAF2A1C280D2800842F36 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = 6HUL83HTGD;
+						LastSwiftMigration = 0800;
 						TestTargetID = 54FFAF161C280D2800842F36;
 					};
 				};
@@ -231,9 +233,9 @@
 				54FFAF511C2D152E00842F36 /* MoreViewController.swift in Sources */,
 				54FFAF4B1C2CFF0300842F36 /* SongLibrary.swift in Sources */,
 				54FFAF411C2828D800842F36 /* Song.swift in Sources */,
+				542800401D98127C0003E854 /* SwiftyJSON.swift in Sources */,
 				54FFAF491C2CFECF00842F36 /* CustomTabBarController.swift in Sources */,
 				54FFAF431C282A0B00842F36 /* SongTableViewCell.swift in Sources */,
-				54FFAF471C284A4300842F36 /* SwiftyJSON.swift in Sources */,
 				54FFAF3B1C28283300842F36 /* SongTableViewController.swift in Sources */,
 				54FFAF1B1C280D2800842F36 /* AppDelegate.swift in Sources */,
 				545247D91C53AA1C005DFF82 /* SongSectionTableViewCell.swift in Sources */,
@@ -292,8 +294,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -337,8 +341,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -357,6 +363,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -373,6 +380,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.ChartWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -387,6 +395,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.ChartWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -398,6 +407,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.ChartWatchTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChartWatch.app/ChartWatch";
 			};
 			name = Debug;
@@ -410,6 +420,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.ChartWatchTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChartWatch.app/ChartWatch";
 			};
 			name = Release;

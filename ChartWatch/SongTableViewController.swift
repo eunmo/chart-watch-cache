@@ -108,6 +108,11 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
             var nowPlayingInfo = song.getNowPlayingInfo()
             nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = player.duration as AnyObject?
             nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime as AnyObject?
+            
+            let displayString = songLibrary!.getSongDisplayString()
+            let index = displayString.index(displayString.startIndex, offsetBy: 3)
+            nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = displayString.substring(from: index) as AnyObject?
+                
             MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
             
             playerViewTitleLabel.text = song.name

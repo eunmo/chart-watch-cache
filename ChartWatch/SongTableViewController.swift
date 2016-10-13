@@ -220,7 +220,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
         if loaded {
             player.play()
             playing = true
-            
+
             MPNowPlayingInfoCenter.default().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration] = player.duration
             MPNowPlayingInfoCenter.default().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime
             

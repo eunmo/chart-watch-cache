@@ -83,6 +83,11 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
             return
         }
         
+        if songs.count > 1 && songs[1].loaded {
+            print("next song loaded")
+            return // preload
+        }
+        
         print("PLAY FIRST")
         
         let song = songs[0]
@@ -109,53 +114,16 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
             
             MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
             
-            play()
-        } catch {
-            
-        }
-        /*
-        let song = songs[0]
-        let urlAsString = SongLibrary.serverAddress + "/music/\(song["id"]).mp3"
-        let url = URL(string: urlAsString)!
-        
-        let title = song["title"].stringValue.replacingOccurrences(of: "`", with: "'")
-        
-        var artistString = ""
-        var i = 0
-        for (_, artistRow) in song["artists"] {
-            if i > 0 {
-                artistString += ", "
+            if (songs.count > 1) {
+                songs[1].load()
             }
-            artistString += artistRow["name"].stringValue.replacingOccurrences(of: "`", with: "'")
-            i += 1
-        }
-        
-        do {
-            //player = try AVAudioPlayer(contentsOf: url)
-            //player.delegate = self
-            //player.prepareToPlay()
             
-            player = try AVPlayer(url: url)
-            NotificationCenter.default.addObserver(self, selector: #selector(NetShuffleTableViewController.playerDidFinishPlaying), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
-            
-            
-            var nowPlayingInfo:[String: AnyObject] = [
-                MPMediaItemPropertyTitle: title as AnyObject,
-                MPMediaItemPropertyArtist: artistString as AnyObject,
-            ]
-            
-            MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-            
-            //MPNowPlayingInfoCenter.default().nowPlayingInfo![MPMediaItemPropertyTitle] = title
-            //MPNowPlayingInfoCenter.default().nowPlayingInfo![MPMediaItemPropertyArtist] = artistString
-        
             play()
         } catch {
-            print ("error: \(error)")
-            // ???
+            
         }
- */
     }
+    
     // MARK: Player
     
     func pause() {

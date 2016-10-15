@@ -11,6 +11,7 @@
 		545247D71C53A4CA005DFF82 /* SongSectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545247D61C53A4CA005DFF82 /* SongSectionTableViewController.swift */; };
 		545247D91C53AA1C005DFF82 /* SongSectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545247D81C53AA1C005DFF82 /* SongSectionTableViewCell.swift */; };
 		54FF5B771DAFE0020059A276 /* NetShuffleTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FF5B761DAFE0020059A276 /* NetShuffleTableViewController.swift */; };
+		54FF5B7D1DB2199E0059A276 /* NetworkSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FF5B7C1DB2199E0059A276 /* NetworkSong.swift */; };
 		54FFAF1B1C280D2800842F36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FFAF1A1C280D2800842F36 /* AppDelegate.swift */; };
 		54FFAF201C280D2800842F36 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54FFAF1E1C280D2800842F36 /* Main.storyboard */; };
 		54FFAF221C280D2800842F36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 54FFAF211C280D2800842F36 /* Assets.xcassets */; };
@@ -39,6 +40,7 @@
 		545247D61C53A4CA005DFF82 /* SongSectionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongSectionTableViewController.swift; sourceTree = "<group>"; };
 		545247D81C53AA1C005DFF82 /* SongSectionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongSectionTableViewCell.swift; sourceTree = "<group>"; };
 		54FF5B761DAFE0020059A276 /* NetShuffleTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetShuffleTableViewController.swift; sourceTree = "<group>"; };
+		54FF5B7C1DB2199E0059A276 /* NetworkSong.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkSong.swift; sourceTree = "<group>"; };
 		54FFAF171C280D2800842F36 /* ChartWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChartWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		54FFAF1A1C280D2800842F36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		54FFAF1F1C280D2800842F36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				54FFAF1A1C280D2800842F36 /* AppDelegate.swift */,
 				54FFAF1E1C280D2800842F36 /* Main.storyboard */,
 				54FF5B761DAFE0020059A276 /* NetShuffleTableViewController.swift */,
+				54FF5B7C1DB2199E0059A276 /* NetworkSong.swift */,
 				54FFAF481C2CFECF00842F36 /* CustomTabBarController.swift */,
 				54FFAF421C282A0B00842F36 /* SongTableViewCell.swift */,
 				54FFAF3A1C28283300842F36 /* SongTableViewController.swift */,
@@ -238,6 +241,7 @@
 				54FFAF4B1C2CFF0300842F36 /* SongLibrary.swift in Sources */,
 				54FFAF411C2828D800842F36 /* Song.swift in Sources */,
 				542800401D98127C0003E854 /* SwiftyJSON.swift in Sources */,
+				54FF5B7D1DB2199E0059A276 /* NetworkSong.swift in Sources */,
 				54FFAF491C2CFECF00842F36 /* CustomTabBarController.swift in Sources */,
 				54FFAF431C282A0B00842F36 /* SongTableViewCell.swift in Sources */,
 				54FFAF3B1C28283300842F36 /* SongTableViewController.swift in Sources */,

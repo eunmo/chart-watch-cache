@@ -10,10 +10,10 @@ import UIKit
 import AVFoundation
 import MediaPlayer
 
-class NetShuffleTableViewController: UITableViewController {
+class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegate {
     
-    var songs = [JSON]()
-    var player = AVPlayer()
+    var songs = [NetworkSong]()
+    var player = AVAudioPlayer()
     var playing = false
     
     // MARK: Notification Key
@@ -34,6 +34,7 @@ class NetShuffleTableViewController: UITableViewController {
         UIApplication.shared.beginReceivingRemoteControlEvents()
         
         NotificationCenter.default.addObserver(self, selector: #selector(NetShuffleTableViewController.receiveNotification), name: NSNotification.Name(rawValue: NetShuffleTableViewController.notificationKey), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(NetShuffleTableViewController.receiveSongLoadedNotification), name: NSNotification.Name(rawValue: NetworkSong.notificationKey), object: nil)
     }
     
     func update() {
@@ -43,6 +44,11 @@ class NetShuffleTableViewController: UITableViewController {
     func receiveNotification() {
         DispatchQueue.main.async(execute: { () -> Void in
             self.update()
+        })
+    }
+    
+    func receiveSongLoadedNotification() {
+        DispatchQueue.main.async(execute: { () -> Void in
             self.playFirst()
         })
     }
@@ -65,68 +71,12 @@ class NetShuffleTableViewController: UITableViewController {
         // Configure the cell...
         let row = indexPath.row
         let song = songs[row]
-        let title = song["title"].stringValue.replacingOccurrences(of: "`", with: "'")
         
-        var artistString = ""
-        var i = 0
-        for (_, artistRow) in song["artists"] {
-            if i > 0 {
-                artistString += ", "
-            }
-            artistString += artistRow["name"].stringValue.replacingOccurrences(of: "`", with: "'")
-            i += 1
-        }
-        
-        cell.textLabel?.text = title
-        cell.detailTextLabel?.text = artistString
+        cell.textLabel?.text = song.name
+        cell.detailTextLabel?.text = song.artist
 
         return cell
     }
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-     */
     
     func playFirst() {
         if songs.count == 0 {
@@ -135,6 +85,35 @@ class NetShuffleTableViewController: UITableViewController {
         
         print("PLAY FIRST")
         
+        let song = songs[0]
+        
+        if (song.loaded == false) {
+            song.load()
+            return
+        }
+        
+        let url = song.getMediaUrl()
+        
+        do {
+            if playing {
+                player.stop()
+            }
+            
+            player = try AVAudioPlayer(contentsOf: url as URL)
+            player.delegate = self
+            player.prepareToPlay()
+            
+            var nowPlayingInfo = song.getNowPlayingInfo()
+            nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = player.duration as AnyObject?
+            nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime as AnyObject?
+            
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+            
+            play()
+        } catch {
+            
+        }
+        /*
         let song = songs[0]
         let urlAsString = SongLibrary.serverAddress + "/music/\(song["id"]).mp3"
         let url = URL(string: urlAsString)!
@@ -175,6 +154,7 @@ class NetShuffleTableViewController: UITableViewController {
             print ("error: \(error)")
             // ???
         }
+ */
     }
     // MARK: Player
     
@@ -187,12 +167,11 @@ class NetShuffleTableViewController: UITableViewController {
     }
     
     func play() {
-        print ("play \(CMTimeGetSeconds((player.currentItem?.duration)!))")
         player.play()
         playing = true
         
-        MPNowPlayingInfoCenter.default().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration] = CMTimeGetSeconds((player.currentItem?.duration)!)
-        //MPNowPlayingInfoCenter.default().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime
+        MPNowPlayingInfoCenter.default().nowPlayingInfo![MPMediaItemPropertyPlaybackDuration] = player.duration
+        MPNowPlayingInfoCenter.default().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime
     }
     
     func toggle() {
@@ -207,7 +186,7 @@ class NetShuffleTableViewController: UITableViewController {
     func playerDidFinishPlaying() {
         let song = songs[0]
         // record play
-        print("\(song["id"]) done")
+        print("\(song.id) done")
         
         songs.remove(at: 0)
         update()
@@ -219,7 +198,8 @@ class NetShuffleTableViewController: UITableViewController {
         if flag {
             let song = songs[0]
             // record play
-            print("\(song["id"]) done")
+            print("\(song.id) done")
+            song.recordPlay()
             
             songs.remove(at: 0)
             update()
@@ -257,13 +237,13 @@ class NetShuffleTableViewController: UITableViewController {
                 let json = JSON(data: data!)
                 
                 for (_, song) in json {
-                    self.songs.append(song)
+                    self.songs.append(NetworkSong(json: song))
                 }
             }
             
             let song = self.songs[0]
-            print(song)
-            print(song["id"])
+            song.load()
+            print(song.id)
             
             self.notifyNetworkDone()
         })

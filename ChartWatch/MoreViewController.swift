@@ -17,6 +17,7 @@ class MoreViewController: UIViewController {
     @IBOutlet weak var pushButton: UIButton!
     @IBOutlet weak var pullButton: UIButton!
     @IBOutlet weak var updateButton: UIButton!
+    @IBOutlet weak var syncButton: UIButton!
     
     var inNetworkWait = false
     
@@ -56,12 +57,14 @@ class MoreViewController: UIViewController {
             pushButton.isEnabled = false
             pullButton.isEnabled = false
             updateButton.isEnabled = false
+            syncButton.isEnabled = false
         } else {
             activityIndicator.stopAnimating()
             
             pushButton.isEnabled = canPush ?? false
             pullButton.isEnabled = true
             updateButton.isEnabled = !(canPush ?? true)
+            syncButton.isEnabled = true
         }
         
         print ("Update UI")
@@ -117,5 +120,10 @@ class MoreViewController: UIViewController {
     @IBAction func update(_ sender: UIButton) {
         startNetworkReuqest()
         songLibrary?.fetch()
+    }
+    
+    @IBAction func sync(_ sender: UIButton) {
+        startNetworkReuqest()
+        songLibrary?.sync()
     }
 }

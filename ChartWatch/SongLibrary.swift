@@ -583,6 +583,27 @@ class SongLibrary {
         return json
     }
     
+    func sync() {
+        let urlAsString = SongLibrary.serverAddress + "/api/ios/push"
+        let url = URL(string: urlAsString)!
+        let urlSession = URLSession.shared
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.httpBody = getPushJSON().data(using: String.Encoding.utf8)
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let task = urlSession.dataTask(with: request, completionHandler: { data, response, error -> Void in
+            if error != nil {
+                print ("\(error)")
+            } else {
+                self.fetch()
+                print ("put successful")
+            }
+        })
+        task.resume()
+    }
+    
     func notify() {
         NotificationCenter.default.post(name: Notification.Name(rawValue: SongLibrary.notificationKey), object: self)
     }

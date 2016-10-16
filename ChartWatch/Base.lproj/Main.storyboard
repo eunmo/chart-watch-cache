@@ -294,7 +294,6 @@
                                 <state key="normal" title="Sync"/>
                                 <connections>
                                     <action selector="sync:" destination="Elh-gf-nQm" eventType="touchUpInside" id="hHS-Xc-1xS"/>
-                                    <action selector="update:" destination="Elh-gf-nQm" eventType="touchUpInside" id="mAp-fc-QV0"/>
                                 </connections>
                             </button>
                         </subviews>

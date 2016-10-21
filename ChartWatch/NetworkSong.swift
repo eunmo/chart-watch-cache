@@ -18,6 +18,7 @@ class NetworkSong {
     var name: String
     var artist: String
     var albumId: Int
+    var plays: Int
     
     var photo: UIImage?
     var loaded: Bool
@@ -31,6 +32,7 @@ class NetworkSong {
         self.id = json["id"].intValue
         self.name = json["title"].stringValue.replacingOccurrences(of: "`", with: "'")
         self.albumId = json["albumId"].intValue
+        self.plays = json["plays"].intValue
         
         var artistString = ""
         var i = 0
@@ -82,6 +84,9 @@ class NetworkSong {
         if let image = photo {
             nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: image)
         }
+        
+        let playString = "\(plays) play" + (plays > 1 ? "s" : "")
+        nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = playString as AnyObject?
         
         return nowPlayingInfo
     }

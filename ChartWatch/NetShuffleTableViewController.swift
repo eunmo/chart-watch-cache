@@ -35,12 +35,31 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
         
         NotificationCenter.default.addObserver(self, selector: #selector(NetShuffleTableViewController.receiveNotification), name: NSNotification.Name(rawValue: NetShuffleTableViewController.notificationKey), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(NetShuffleTableViewController.receiveSongLoadedNotification), name: NSNotification.Name(rawValue: NetworkSong.notificationKey), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(NetShuffleTableViewController.receiveWebViewSongs), name: NSNotification.Name(rawValue: WebViewController.notificationKey), object: nil)
     }
     
     func update() {
         tableView.reloadData()
     }
     
+    func addSongsFromJSON(json: JSON) {
+        for (_, song) in json {
+            songs.append(NetworkSong(json: song))
+        }
+    
+        let song = songs[0]
+        song.load()
+    
+        notifyNetworkDone()
+    }
+    
+    func receiveWebViewSongs(_ notification: NSNotification) {
+        if let data = notification.userInfo?["json"] as? String {
+            let json = JSON.parse(data)
+            addSongsFromJSON(json: json)
+        }
+    }
+
     func receiveNotification() {
         DispatchQueue.main.async(execute: { () -> Void in
             self.update()
@@ -201,19 +220,9 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
             if error != nil {
                 // should do something
             } else {
-                print("YEA")
                 let json = JSON(data: data!)
-                
-                for (_, song) in json {
-                    self.songs.append(NetworkSong(json: song))
-                }
+                self.addSongsFromJSON(json: json)
             }
-            
-            let song = self.songs[0]
-            song.load()
-            print(song.id)
-            
-            self.notifyNetworkDone()
         })
         
         jsonQuery.resume()

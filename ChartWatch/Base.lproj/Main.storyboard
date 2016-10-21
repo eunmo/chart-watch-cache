@@ -125,7 +125,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1965" y="481"/>
+            <point key="canvasLocation" x="1964" y="125"/>
         </scene>
         <!--Song Section Table View Controller-->
         <scene sceneID="vv3-6a-uhu">
@@ -209,7 +209,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rOd-RP-vxP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2764" y="481"/>
+            <point key="canvasLocation" x="2754" y="125"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Xma-ms-E5c">
@@ -228,7 +228,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="H4K-On-3WK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1153" y="481"/>
+            <point key="canvasLocation" x="1153" y="125"/>
         </scene>
         <!--More View Controller-->
         <scene sceneID="Jhf-M9-yQQ">
@@ -352,7 +352,42 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NOv-zZ-Nvx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1153" y="1146"/>
+            <point key="canvasLocation" x="1964" y="1489"/>
+        </scene>
+        <!--Web View Controller-->
+        <scene sceneID="DUE-zR-i8y">
+            <objects>
+                <viewController id="NUb-jj-lS1" customClass="WebViewController" customModule="ChartWatch" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Voe-78-rkx"/>
+                        <viewControllerLayoutGuide type="bottom" id="RU0-ft-nho"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Zfk-S1-R71">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fja-b8-ROR">
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
+                                <dataDetectorType key="dataDetectorTypes"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="fja-b8-ROR" firstAttribute="top" secondItem="Voe-78-rkx" secondAttribute="bottom" id="KRG-lG-JNT"/>
+                            <constraint firstItem="fja-b8-ROR" firstAttribute="leading" secondItem="Zfk-S1-R71" secondAttribute="leading" id="d2S-Y5-JEd"/>
+                            <constraint firstAttribute="trailing" secondItem="fja-b8-ROR" secondAttribute="trailing" id="jI3-cm-zP1"/>
+                            <constraint firstItem="RU0-ft-nho" firstAttribute="top" secondItem="fja-b8-ROR" secondAttribute="bottom" id="tgE-C6-Ycn"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" systemItem="bookmarks" id="ceb-vb-ID4"/>
+                    <connections>
+                        <outlet property="webView" destination="fja-b8-ROR" id="yVC-mA-ETC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eo8-bs-f2t" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1153" y="1490"/>
         </scene>
         <!--Network Shuffle-->
         <scene sceneID="FyW-Ls-jgp">
@@ -403,7 +438,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tOI-vn-l0e" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2764" y="1146"/>
+            <point key="canvasLocation" x="1964" y="804"/>
         </scene>
         <!--Custom Tab Bar Controller-->
         <scene sceneID="iLK-fq-aRr">
@@ -418,6 +453,7 @@
                     <connections>
                         <segue destination="oE4-va-MVu" kind="relationship" relationship="viewControllers" id="TAj-gH-GVi"/>
                         <segue destination="Kj0-Ho-fkA" kind="relationship" relationship="viewControllers" id="a1i-f6-Qba"/>
+                        <segue destination="NUb-jj-lS1" kind="relationship" relationship="viewControllers" id="n7E-jC-DUU"/>
                         <segue destination="Elh-gf-nQm" kind="relationship" relationship="viewControllers" id="hK7-HI-ui6"/>
                     </connections>
                 </tabBarController>
@@ -442,7 +478,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HEY-js-eGt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1964" y="1146"/>
+            <point key="canvasLocation" x="1153" y="804"/>
         </scene>
     </scenes>
     <resources>

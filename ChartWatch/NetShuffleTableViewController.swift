@@ -97,6 +97,15 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String {
+        return "\(songs.count) Songs"
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        songs.removeLast(songs.count - indexPath.row - 1) // keep the selected song
+        update()
+    }
+    
     func playFirst() {
         if songs.count == 0 {
             return

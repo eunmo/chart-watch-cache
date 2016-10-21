@@ -389,17 +389,17 @@
             </objects>
             <point key="canvasLocation" x="1153" y="1490"/>
         </scene>
-        <!--Network Shuffle-->
+        <!--Stream-->
         <scene sceneID="FyW-Ls-jgp">
             <objects>
                 <tableViewController id="EaY-Nv-dM3" customClass="NetShuffleTableViewController" customModule="ChartWatch" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="ZWd-bM-SQO">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="ZWd-bM-SQO">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="NetShuffleTableViewCell" textLabel="tjH-gt-Ur5" detailTextLabel="7Is-nd-VRF" style="IBUITableViewCellStyleSubtitle" id="19w-i7-WtI">
-                                <rect key="frame" x="0.0" y="92" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="120" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="19w-i7-WtI" id="6aq-57-QR7">
                                     <frame key="frameInset" width="375" height="43"/>
@@ -428,7 +428,7 @@
                             <outlet property="delegate" destination="EaY-Nv-dM3" id="dFo-oz-26w"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Network Shuffle" id="xhz-Oc-Z6v">
+                    <navigationItem key="navigationItem" title="Stream" id="xhz-Oc-Z6v">
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="DiI-ye-qDi">
                             <connections>
                                 <action selector="refresh:" destination="EaY-Nv-dM3" id="mfG-tT-t6h"/>

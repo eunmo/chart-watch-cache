@@ -36,12 +36,10 @@ class WebViewController: UIViewController, UIWebViewDelegate {
     func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         if let s = request.url?.absoluteString {
             if s.hasPrefix("js:") {
-                print("JS called!")
                 let data = s.components(separatedBy: "js://songs")[1].removingPercentEncoding!
                 let userInfo:[String:String] = ["json": data]
                 
                 NotificationCenter.default.post(name: Notification.Name(rawValue: WebViewController.notificationKey), object: self, userInfo: userInfo)
-                print("FIRE")
             }
         }
         

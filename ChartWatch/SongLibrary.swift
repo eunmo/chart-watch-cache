@@ -38,6 +38,8 @@ class SongLibrary {
     static let notificationKey = "songLibraryNotificationKey"
     static let networkNotificationKey = "songLibraryNetworkNotificationKey"
     static let serverAddress = "http://211.200.135.97:3000"
+    // should have an option to switch back and forth between these IPs
+    //static let serverAddress = "http://192.168.25.37:3000"
     
     // MARK: Constructor
     

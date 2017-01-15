@@ -83,7 +83,14 @@ class SongSectionTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let song = songLibrary!.selectSongAtIndex(section, index: (indexPath as NSIndexPath).row) {
-            player?.playSong(song)
+            let alertController = UIAlertController(title: "Play song?", message: "", preferredStyle: UIAlertControllerStyle.alert)
+            alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.default, handler: nil))
+            alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default, handler: { action in
+                self.player?.playSong(song)
+                self.navigationController!.popViewController(animated: true)
+            }))
+            alertController.preferredAction = alertController.actions[1] // Done
+            present(alertController, animated: true, completion: nil)
         }
     }
 

@@ -39,7 +39,19 @@ class WebViewController: UIViewController, UIWebViewDelegate {
                 let data = s.components(separatedBy: "js://songs")[1].removingPercentEncoding!
                 let userInfo:[String:String] = ["json": data]
                 
-                NotificationCenter.default.post(name: Notification.Name(rawValue: WebViewController.notificationKey), object: self, userInfo: userInfo)
+                
+                let json = JSON.parse(data)
+                let title = "Stream \(json.count) song\(json.count > 1 ? "s" : "")?"
+                
+                let alertController = UIAlertController(title: title, message: "", preferredStyle: UIAlertControllerStyle.alert)
+                alertController.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.default, handler: nil))
+                alertController.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default, handler: { action in
+                    print (title)
+                    self.tabBarController?.selectedIndex = 1
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: WebViewController.notificationKey), object: self, userInfo: userInfo)
+                }))
+                alertController.preferredAction = alertController.actions[1] // Done
+                present(alertController, animated: true, completion: nil)
             }
         }
         

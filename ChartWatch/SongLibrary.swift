@@ -586,7 +586,7 @@ class SongLibrary {
     }
     
     func sync() {
-        let urlAsString = SongLibrary.serverAddress + "/api/ios/push"
+        let urlAsString = SongLibrary.serverAddress + "/ios/plays/push"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         

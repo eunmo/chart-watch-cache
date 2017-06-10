@@ -363,7 +363,7 @@ class SongLibrary {
         let plays = songRow["plays"].intValue
         
         var artists = [String]()
-        for (_, artistRow) in songRow["songArtists"] {
+        for (_, artistRow) in songRow["artists"] {
             let artist = artistRow["name"].stringValue.replacingOccurrences(of: "`", with: "'")
             let order = artistRow["order"].intValue
             artists.insert(artist, at: order)
@@ -393,7 +393,7 @@ class SongLibrary {
     func fetch() {
         initSections()
         
-        let urlAsString = SongLibrary.serverAddress + "/api/ios/fetch" + getLimitParameterString()
+        let urlAsString = SongLibrary.serverAddress + "/ios/fetch" + getLimitParameterString()
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         
@@ -480,7 +480,7 @@ class SongLibrary {
     }
     
     func push() {
-        let urlAsString = SongLibrary.serverAddress + "/api/ios/push"
+        let urlAsString = SongLibrary.serverAddress + "/ios/plays/push"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         
@@ -531,7 +531,7 @@ class SongLibrary {
     }
     
     func pull() {
-        let urlAsString = SongLibrary.serverAddress + "/api/ios/pull"
+        let urlAsString = SongLibrary.serverAddress + "/ios/plays/pull"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         

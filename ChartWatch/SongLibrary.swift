@@ -24,8 +24,7 @@ class SongLibrary {
     var songIds = [Int:Song]()
     var albumIds = Set<Int>()
     let dateFormatter: DateFormatter = DateFormatter()
-    let songSections = ["current", "album", "seasonal", "charted", "uncharted"]
-    var sectionLimits = [100, 100, 3, 300, 300]
+    let songSections = ["current", "album", "seasonal", "charted", "uncharted", "favorite"]
     
     // MARK: Archiving Paths
     
@@ -280,34 +279,6 @@ class SongLibrary {
         }
     }
     
-    // MARK: Limits
-    
-    func getLimit(_ sectionName: String) -> Int {
-        if let section = songSections.index(of: sectionName) {
-            return sectionLimits[section]
-        }
-        
-        return 0
-    }
-    
-    func setLimit(_ sectionName: String, limit: Int) {
-        if let section = songSections.index(of: sectionName) , limit >= 0 {
-            sectionLimits[section] = limit
-            saveLimits()
-        }
-    }
-    
-    func getLimitParameterString() -> String {
-        var params = "?"
-        
-        for section in songSections {
-            let limit = getLimit(section)
-            params += "\(section)=\(limit)&"
-        }
-        
-        return params
-    }
-    
     // MARK: NSCoding
     
     func save() {
@@ -317,10 +288,6 @@ class SongLibrary {
         if !isSuccessfulSave {
             print("Failed to save songs...")
         }
-    }
-    
-    func saveLimits() {
-        NSKeyedArchiver.archiveRootObject(sectionLimits, toFile: SongLibrary.LimitsURL.path)
     }
     
     func load() {
@@ -333,13 +300,6 @@ class SongLibrary {
                     _ = registerSong(song)
                 }
             }
-        }
-    }
-    
-    func loadLimits() {
-        if let savedLimits = NSKeyedUnarchiver.unarchiveObject(withFile: SongLibrary.LimitsURL.path) as? [Int]
-        , savedLimits.count == sections.count {
-            sectionLimits = savedLimits
         }
     }
     
@@ -393,7 +353,7 @@ class SongLibrary {
     func fetch() {
         initSections()
         
-        let urlAsString = SongLibrary.serverAddress + "/ios/fetch" + getLimitParameterString()
+        let urlAsString = SongLibrary.serverAddress + "/ios/fetch"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         

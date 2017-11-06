@@ -451,7 +451,7 @@ class SongLibrary {
 
         let task = urlSession.dataTask(with: request, completionHandler: { data, response, error -> Void in
             if error != nil {
-                print ("\(error)")
+                print ("\(String(describing: error))")
             } else {
                 self.notifyNetworkDone()
                 print ("put successful")
@@ -502,7 +502,7 @@ class SongLibrary {
         
         let task = urlSession.dataTask(with: request, completionHandler: { data, response, error -> Void in
             if error != nil {
-                print ("\(error)")
+                print ("\(String(describing: error))")
             } else {
                 let json = JSON(data: data!)
                 
@@ -557,7 +557,7 @@ class SongLibrary {
         
         let task = urlSession.dataTask(with: request, completionHandler: { data, response, error -> Void in
             if error != nil {
-                print ("\(error)")
+                print ("\(String(describing: error))")
             } else {
                 self.fetch()
                 print ("put successful")

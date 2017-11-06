@@ -36,7 +36,7 @@ class SongSectionTableViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    func receiveNotification() {
+    @objc func receiveNotification() {
         DispatchQueue.main.async(execute: { () -> Void in
             self.update()
         })

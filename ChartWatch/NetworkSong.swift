@@ -65,7 +65,7 @@ class NetworkSong {
         
         let task = urlSession.dataTask(with: request, completionHandler: { data, response, error -> Void in
             if error != nil {
-                print ("\(error)")
+                print ("\(String(describing: error))")
             } else {
                 print ("record play successful")
             }

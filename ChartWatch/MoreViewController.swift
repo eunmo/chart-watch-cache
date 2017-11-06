@@ -70,13 +70,13 @@ class MoreViewController: UIViewController {
         print ("Update UI")
     }
     
-    func receiveNotification() {
+    @objc func receiveNotification() {
         DispatchQueue.main.async(execute: {
             self.updateUI()
         })
     }
     
-    func receiveNetworkNotification() {
+    @objc func receiveNetworkNotification() {
         inNetworkWait = false
         receiveNotification()
     }

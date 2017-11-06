@@ -53,20 +53,20 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
         notifyNetworkDone()
     }
     
-    func receiveWebViewSongs(_ notification: NSNotification) {
+    @objc func receiveWebViewSongs(_ notification: NSNotification) {
         if let data = notification.userInfo?["json"] as? String {
             let json = JSON.parse(data)
             addSongsFromJSON(json: json)
         }
     }
 
-    func receiveNotification() {
+    @objc func receiveNotification() {
         DispatchQueue.main.async(execute: { () -> Void in
             self.update()
         })
     }
     
-    func receiveSongLoadedNotification() {
+    @objc func receiveSongLoadedNotification() {
         DispatchQueue.main.async(execute: { () -> Void in
             self.playFirst()
         })

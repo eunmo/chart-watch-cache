@@ -55,7 +55,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
         playModeLabel.text = ""
     }
     
-    func receiveNotification() {
+    @objc func receiveNotification() {
         DispatchQueue.main.async(execute: { () -> Void in
             self.tableView.reloadData()
         })

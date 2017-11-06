@@ -67,7 +67,7 @@ class Song: NSObject, NSCoding {
         plays += 1
         lastPlayed = Date()
         
-        print ("\(name) played \(plays) times (last played \(lastPlayed))")
+        print ("\(name) played \(plays) times (last played \(String(describing: lastPlayed)))")
     }
     
     // MARK: Information

@@ -208,7 +208,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     // MARK: Player
     
     func pause() {
-        print ("pause")
+        NSLog("S pause")
         if playing {
             player.pause()
             playing = false
@@ -216,7 +216,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     }
     
     func play() {
-        print ("play")
+        NSLog("S play")
         if loaded {
             player.play()
             playing = true
@@ -229,7 +229,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     }
     
     func toggle() {
-        print ("toggle")
+        NSLog("S toggle")
         if playing {
             pause()
         } else {
@@ -238,6 +238,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     }
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        NSLog("S audioPlayerDidFinishPlaying")
         if flag {
             songLibrary?.recordPlay()
             if let song = songLibrary?.selectNextSong() {
@@ -249,6 +250,7 @@ class SongTableViewController: UITableViewController, AVAudioPlayerDelegate {
     }
     
     override func remoteControlReceived(with event: UIEvent?) {
+        NSLog("S remoteControlReceived")
         switch event!.subtype {
         case .remoteControlTogglePlayPause:
             toggle()

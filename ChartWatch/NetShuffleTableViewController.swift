@@ -28,10 +28,6 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        _ = try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: [])
-        _ = try? AVAudioSession.sharedInstance().setActive(true, with: [])
-        
-        UIApplication.shared.beginReceivingRemoteControlEvents()
         
         NotificationCenter.default.addObserver(self, selector: #selector(NetShuffleTableViewController.receiveNotification), name: NSNotification.Name(rawValue: NetShuffleTableViewController.notificationKey), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(NetShuffleTableViewController.receiveSongLoadedNotification), name: NSNotification.Name(rawValue: NetworkSong.notificationKey), object: nil)
@@ -155,7 +151,7 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
     // MARK: Player
     
     func pause() {
-        print ("pause")
+        NSLog("N pause")
         if playing {
             player.pause()
             playing = false
@@ -163,6 +159,7 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
     }
     
     func play() {
+        NSLog("N play")
         player.play()
         playing = true
         
@@ -171,7 +168,7 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
     }
     
     func toggle() {
-        print ("toggle")
+        NSLog("N toggle")
         if playing {
             pause()
         } else {
@@ -179,18 +176,8 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
         }
     }
     
-    func playerDidFinishPlaying() {
-        let song = songs[0]
-        // record play
-        print("\(song.id) done")
-        
-        songs.remove(at: 0)
-        update()
-        playFirst()
-        
-    }
-    
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        NSLog("N audioPlayerDidFinishPlaying")
         if flag {
             let song = songs[0]
             // record play
@@ -204,6 +191,7 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
     }
     
     override func remoteControlReceived(with event: UIEvent?) {
+        NSLog("N remoteControlReceived")
         switch event!.subtype {
         case .remoteControlTogglePlayPause:
             toggle()

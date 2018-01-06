@@ -20,6 +20,10 @@ class CustomTabBarController: UITabBarController {
         // Do any additional setup after loading the view.
         songLibrary = SongLibrary()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        songLibrary!.loadSongs()
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

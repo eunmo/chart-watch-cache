@@ -36,7 +36,7 @@ class SongLibrary {
     
     static let notificationKey = "songLibraryNotificationKey"
     static let networkNotificationKey = "songLibraryNetworkNotificationKey"
-    static let serverAddress = "http://211.200.135.97:3000"
+    static let serverAddress = "http://124.49.11.117:3000"
     // should have an option to switch back and forth between these IPs
     //static let serverAddress = "http://192.168.25.37:3000"
     
@@ -311,9 +311,18 @@ class SongLibrary {
         } else {
             songIds[song.id] = song
             albumIds.insert(song.album)
-            song.load()
+            //song.load()
             return song
         }
+    }
+    
+    func loadSongs() {
+        for section in sections {
+            for song in section {
+                song.load()
+            }
+        }
+        notify()
     }
     
     func songFromJSON(_ songRow: JSON) -> Song {

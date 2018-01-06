@@ -45,6 +45,16 @@ class NetworkSong {
             artistString += artistRow["name"].stringValue.replacingOccurrences(of: "`", with: "'")
             i += 1
         }
+        i = 0
+        for (_, artistRow) in json["features"] {
+            if i == 0 {
+                artistString += " feat "
+            } else {
+                artistString += ", "
+            }
+            artistString += artistRow["name"].stringValue.replacingOccurrences(of: "`", with: "'")
+            i += 1
+        }
         self.artist = artistString
         
         self.photo = nil

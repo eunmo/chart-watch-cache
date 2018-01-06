@@ -336,20 +336,27 @@ class SongLibrary {
         let title = songRow["title"].stringValue.replacingOccurrences(of: "`", with: "'")
         let plays = songRow["plays"].intValue
         
-        var artists = [String]()
-        for (_, artistRow) in songRow["artists"] {
-            let artist = artistRow["name"].stringValue.replacingOccurrences(of: "`", with: "'")
-            let order = artistRow["order"].intValue
-            artists.insert(artist, at: order)
-        }
-        
         var artistString = ""
-        for (i, artist) in artists.enumerated() {
+        var i = 0
+        for (_, artistRow) in songRow["artists"] {
             if i > 0 {
                 artistString += ", "
             }
-            artistString += artist
+            artistString += artistRow["name"].stringValue.replacingOccurrences(of: "`", with: "'")
+            i += 1
         }
+    
+        i = 0
+        for (_, artistRow) in songRow["features"] {
+            if i == 0 {
+                artistString += " feat "
+            } else {
+                artistString += ", "
+            }
+            artistString += artistRow["name"].stringValue.replacingOccurrences(of: "`", with: "'")
+            i += 1
+        }
+        
         return Song(name: title, artist: artistString, id: songId, album: albumId, plays: plays, lastPlayed: nil)!
     }
     

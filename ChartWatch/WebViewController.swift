@@ -24,9 +24,12 @@ class WebViewController: UIViewController, UIWebViewDelegate {
         // Do any additional setup after loading the view.
         webView.delegate = self
         
-        let url = URL(string: SongLibrary.serverAddress)
-        let request = URLRequest(url: url!)
-        webView.loadRequest(request)
+        if let tabBarController = self.tabBarController as? CustomTabBarController {
+            let songLibrary = tabBarController.songLibrary
+            let url = URL(string: songLibrary!.serverAddress)
+            let request = URLRequest(url: url!)
+            webView.loadRequest(request)
+        }
     }
     
     func webViewDidFinishLoad(_ webView: UIWebView) {

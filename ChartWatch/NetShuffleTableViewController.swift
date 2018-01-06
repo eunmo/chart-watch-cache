@@ -12,6 +12,7 @@ import MediaPlayer
 
 class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegate {
     
+    var songLibrary: SongLibrary?
     var songs = [NetworkSong]()
     var player = AVAudioPlayer()
     var playing = false
@@ -32,6 +33,10 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
         NotificationCenter.default.addObserver(self, selector: #selector(NetShuffleTableViewController.receiveNotification), name: NSNotification.Name(rawValue: NetShuffleTableViewController.notificationKey), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(NetShuffleTableViewController.receiveSongLoadedNotification), name: NSNotification.Name(rawValue: NetworkSong.notificationKey), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(NetShuffleTableViewController.receiveWebViewSongs), name: NSNotification.Name(rawValue: WebViewController.notificationKey), object: nil)
+        
+        if let tabBarController = self.tabBarController as? CustomTabBarController {
+            songLibrary = tabBarController.songLibrary
+        }
     }
     
     func update() {
@@ -44,7 +49,7 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
         }
     
         let song = songs[0]
-        song.load()
+        song.load(serverAddress: songLibrary!.serverAddress)
     
         notifyNetworkDone()
     }
@@ -117,7 +122,7 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
         let song = songs[0]
         
         if (song.loaded == false) {
-            song.load()
+            song.load(serverAddress: songLibrary!.serverAddress)
             return
         }
         
@@ -139,7 +144,7 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
             MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
             
             if (songs.count > 1) {
-                songs[1].load()
+                songs[1].load(serverAddress: songLibrary!.serverAddress)
             }
             
             play()
@@ -202,27 +207,6 @@ class NetShuffleTableViewController: UITableViewController, AVAudioPlayerDelegat
         default:break
         }
         
-    }
-    
-    // MARK: Actions
-    
-    @IBAction func refresh(_ sender: UIBarButtonItem) {
-        songs.removeAll()
-        
-        let urlAsString = SongLibrary.serverAddress + "/shuffle"
-        let url = URL(string: urlAsString)!
-        let urlSession = URLSession.shared
-        
-        let jsonQuery = urlSession.dataTask(with: url, completionHandler: { data, response, error -> Void in
-            if error != nil {
-                // should do something
-            } else {
-                let json = JSON(data: data!)
-                self.addSongsFromJSON(json: json)
-            }
-        })
-        
-        jsonQuery.resume()
     }
     
     func notifyNetworkDone() {

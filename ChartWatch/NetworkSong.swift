@@ -23,6 +23,8 @@ class NetworkSong {
     var photo: UIImage?
     var loaded: Bool
     
+    var serverAddress = ""
+    
     // MARK: Notification Key
     
     static let notificationKey = "networkSongNotificationKey"
@@ -52,7 +54,7 @@ class NetworkSong {
     // MARK: Update
     
     func recordPlay() {
-        let urlAsString = SongLibrary.serverAddress + "/api/play/song"
+        let urlAsString = serverAddress + "/api/play/song"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         
@@ -115,7 +117,7 @@ class NetworkSong {
             return
         }
         
-        let urlAsString = "\(SongLibrary.serverAddress)/music/\(id).mp3"
+        let urlAsString = "\(serverAddress)/music/\(id).mp3"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         
@@ -136,7 +138,7 @@ class NetworkSong {
     
     func loadImage() {
         
-        let urlAsString = "\(SongLibrary.serverAddress)/\(albumId).jpg"
+        let urlAsString = "\(serverAddress)/\(albumId).jpg"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         
@@ -145,14 +147,15 @@ class NetworkSong {
                 self.photo = UIImage(data: data!)
                 self.loadMedia()
             } else {
-                self.load()
+                self.loadImage()
             }
         })
         
         query.resume()
     }
     
-    func load() {
+    func load(serverAddress: String) {
+        self.serverAddress = serverAddress
         loadImage()
     }
     

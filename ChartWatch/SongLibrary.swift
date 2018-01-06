@@ -26,6 +26,8 @@ class SongLibrary {
     let dateFormatter: DateFormatter = DateFormatter()
     let songSections = ["current", "album", "seasonal", "charted", "uncharted", "favorite"]
     
+    var serverAddress = ""
+    
     // MARK: Archiving Paths
     
     static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -36,9 +38,6 @@ class SongLibrary {
     
     static let notificationKey = "songLibraryNotificationKey"
     static let networkNotificationKey = "songLibraryNetworkNotificationKey"
-    static let serverAddress = "http://124.49.11.117:3000"
-    // should have an option to switch back and forth between these IPs
-    //static let serverAddress = "http://192.168.25.37:3000"
     
     // MARK: Constructor
     
@@ -61,6 +60,12 @@ class SongLibrary {
     func initMaps() {
         songIds = [Int:Song]()
         albumIds = Set<Int>()
+    }
+    
+    // MARK: Location
+    
+    func setLocation(home: Bool) {
+        serverAddress = home ? "http://192.168.219.137:3000" : "http://124.49.11.117:3000"
     }
     
     // MARK: Getters
@@ -319,7 +324,7 @@ class SongLibrary {
     func loadSongs() {
         for section in sections {
             for song in section {
-                song.load()
+                song.load(serverAddress: serverAddress)
             }
         }
         notify()
@@ -362,7 +367,7 @@ class SongLibrary {
     func fetch() {
         initSections()
         
-        let urlAsString = SongLibrary.serverAddress + "/ios/fetch"
+        let urlAsString = serverAddress + "/ios/fetch"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         
@@ -381,7 +386,8 @@ class SongLibrary {
                     self.sectionFromJSON(section, json: json)
                 }
                 
-                _ = self.cleanup()
+                self.loadSongs()
+                self.cleanup()
                 self.save()
                 self.notifyNetworkDone()
             }
@@ -449,7 +455,7 @@ class SongLibrary {
     }
     
     func push() {
-        let urlAsString = SongLibrary.serverAddress + "/ios/plays/push"
+        let urlAsString = serverAddress + "/ios/plays/push"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         
@@ -500,7 +506,7 @@ class SongLibrary {
     }
     
     func pull() {
-        let urlAsString = SongLibrary.serverAddress + "/ios/plays/pull"
+        let urlAsString = serverAddress + "/ios/plays/pull"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         
@@ -555,7 +561,7 @@ class SongLibrary {
     }
     
     func sync() {
-        let urlAsString = SongLibrary.serverAddress + "/ios/plays/push"
+        let urlAsString = serverAddress + "/ios/plays/push"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         

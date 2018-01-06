@@ -24,6 +24,8 @@ class Song: NSObject, NSCoding {
     var largePhoto: UIImage?
     var loaded: Bool
     
+    var serverAddress = ""
+    
     // MARK: Types
     
     struct PropertyKey {
@@ -107,6 +109,11 @@ class Song: NSObject, NSCoding {
         self.init(name: name, artist: artist, id: id, album: album, plays: plays, lastPlayed: lastPlayed)
     }
     
+    func load(serverAddress: String) {
+        self.serverAddress = serverAddress
+        loadImage()
+    }
+    
     // MARK: Image
     
     func getImageUrl() -> URL {
@@ -123,8 +130,7 @@ class Song: NSObject, NSCoding {
         print("Saving image to \(fileUrl)")
     }
     
-    func load() {
-        
+    func loadImage() {
         let filePath = getImageUrl().path
         if FileManager.default.fileExists(atPath: filePath) {
             photo = UIImage(contentsOfFile: filePath)
@@ -134,7 +140,7 @@ class Song: NSObject, NSCoding {
             }
         }
         
-        let urlAsString = "\(SongLibrary.serverAddress)/\(album).80px.jpg"
+        let urlAsString = "\(serverAddress)/\(album).80px.jpg"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         
@@ -143,7 +149,7 @@ class Song: NSObject, NSCoding {
                 self.saveImage(data!)
                 self.loadLargeImage()
             } else {
-                self.load()
+                self.loadImage()
             }
         })
         
@@ -177,7 +183,7 @@ class Song: NSObject, NSCoding {
             }
         }
         
-        let urlAsString = "\(SongLibrary.serverAddress)/\(album).jpg"
+        let urlAsString = "\(serverAddress)/\(album).jpg"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         
@@ -186,7 +192,7 @@ class Song: NSObject, NSCoding {
                 self.saveLargeImage(data!)
                 self.loadMedia()
             } else {
-                self.load()
+                self.loadLargeImage()
             }
         })
         
@@ -217,7 +223,7 @@ class Song: NSObject, NSCoding {
             return
         }
         
-        let urlAsString = "\(SongLibrary.serverAddress)/music/\(id).mp3"
+        let urlAsString = "\(serverAddress)/music/\(id).mp3"
         let url = URL(string: urlAsString)!
         let urlSession = URLSession.shared
         

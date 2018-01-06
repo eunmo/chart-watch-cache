@@ -22,12 +22,29 @@ class CustomTabBarController: UITabBarController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        songLibrary!.loadSongs()
+        let alertController = UIAlertController(title: "Where are you?", message: "", preferredStyle: UIAlertControllerStyle.alert)
+        alertController.addAction(UIAlertAction(title: "Outside", style: UIAlertActionStyle.default, handler: outsideHandler))
+        alertController.addAction(UIAlertAction(title: "Home", style: UIAlertActionStyle.default, handler: homeHandler))
+        alertController.preferredAction = alertController.actions[1] // Home
+        present(alertController, animated: true, completion: nil)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func setLocation(home: Bool) {
+        songLibrary!.setLocation(home: home)
+        songLibrary!.loadSongs()
+    }
+    
+    func outsideHandler(action: UIAlertAction!) -> Void {
+        setLocation(home: false)
+    }
+    
+    func homeHandler(action: UIAlertAction!) -> Void {
+        setLocation(home: true)
     }
     
 

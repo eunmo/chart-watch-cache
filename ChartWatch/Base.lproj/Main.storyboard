@@ -351,14 +351,14 @@
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="ovP-w5-LS8"/>
                                 <exclude reference="auW-Fk-HnM"/>
                                 <exclude reference="inu-CQ-vqy"/>
-                                <exclude reference="ovP-w5-LS8"/>
+                                <exclude reference="kCS-xC-xGZ"/>
                                 <exclude reference="bNc-e8-Mk1"/>
                                 <exclude reference="fDf-Nb-uzt"/>
                                 <exclude reference="tW9-nO-vc7"/>
                                 <exclude reference="vdB-e9-u1q"/>
-                                <exclude reference="kCS-xC-xGZ"/>
                             </mask>
                         </variation>
                     </view>
